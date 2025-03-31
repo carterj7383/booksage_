@@ -50,47 +50,49 @@ jobs:
           python -m pip install --upgrade pip
           pip install flask jinja2 beautifulsoup4
       
-      - name: Check for HTML comment errors
-        continue-on-error: true
+      - name: Create HTML validator script
         run: |
-          python -c "
-import os
-import re
+          cat > validate_html.py << 'EOF'
+          import os
+          import re
 
-TEMPLATES_DIR = 'templates'
-issues_found = False
+          TEMPLATES_DIR = 'templates'
+          issues_found = False
 
-def check_html_comments(file_path):
-    with open(file_path, 'r', encoding='utf-8') as f:
-        content = f.read()
-    
-    # Check for malformed HTML comments
-    lines = content.split('\\n')
-    for i, line in enumerate(lines):
-        line = line.strip()
-        if line.startswith('-') and '-->' in line and not line.startswith('<!--'):
-            print(f'ERROR in {file_path}, line {i+1}: Malformed HTML comment: {line}')
-            return True
-    
-    return False
+          def check_html_comments(file_path):
+              with open(file_path, 'r', encoding='utf-8') as f:
+                  content = f.read()
+              
+              # Check for malformed HTML comments
+              lines = content.split('\n')
+              for i, line in enumerate(lines):
+                  line = line.strip()
+                  if line.startswith('-') and '-->' in line and not line.startswith('<!--'):
+                      print(f'ERROR in {file_path}, line {i+1}: Malformed HTML comment: {line}')
+                      return True
+              
+              return False
 
-# Process all HTML files if the directory exists
-if os.path.exists(TEMPLATES_DIR):
-    for root, dirs, files in os.walk(TEMPLATES_DIR):
-        for file in files:
-            if file.endswith('.html'):
-                file_path = os.path.join(root, file)
-                if check_html_comments(file_path):
-                    issues_found = True
-else:
-    print('Templates directory not found, skipping check')
+          # Process all HTML files if the directory exists
+          if os.path.exists(TEMPLATES_DIR):
+              for root, dirs, files in os.walk(TEMPLATES_DIR):
+                  for file in files:
+                      if file.endswith('.html'):
+                          file_path = os.path.join(root, file)
+                          if check_html_comments(file_path):
+                              issues_found = True
+          else:
+              print('Templates directory not found, skipping check')
 
-# Exit with warning if issues found
-if issues_found:
-    print('WARNING: HTML comment issues detected')
-else:
-    print('SUCCESS: No HTML comment issues detected')
-          "
+          # Exit with warning if issues found
+          if issues_found:
+              print('WARNING: HTML comment issues detected')
+          else:
+              print('SUCCESS: No HTML comment issues detected')
+          EOF
+      
+      - name: Run HTML validation
+        run: python validate_html.py
   
   build:
     needs: [validate-code, validate-templates]
@@ -123,4 +125,4 @@ else:
         uses: actions/upload-artifact@v3
         with:
           name: booksage-app
-          path: booksage-app.zip 
+          path: booksage-app.zip
