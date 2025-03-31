@@ -1,59 +1,7 @@
-name: BookSage CI/CD Pipeline
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
-
-jobs:
-  validate-code:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-          cache: 'pip'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install flake8 pytest pytest-flask
-      
-      - name: Lint with flake8
-        continue-on-error: true
-        run: |
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-  
-  validate-templates:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install flask jinja2 beautifulsoup4
-      
-      - name: Check for HTML comment errors
-        continue-on-error: true
-        run: |
-          python -c "
+- name: Check for HTML comment errors
+  continue-on-error: true
+  run: |
+    python -c "
 import os
 import re
 
@@ -90,46 +38,4 @@ if issues_found:
     print('WARNING: HTML comment issues detected')
 else:
     print('SUCCESS: No HTML comment issues detected')
-          "
-  
-  build:
-    needs: [validate-code, validate-templates]
-    if: success() || failure()  # Continue even if validation shows issues
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      
-      - name: Create deployment package
-        run: |
-          mkdir -p deployment
-          cp -r templates deployment/ || echo "No templates directory found"
-          cp -r static deployment/ || mkdir -p deployment/static
-          cp *.py deployment/ || echo "No Python files found at root"
-          if [ -f requirements.txt ]; then cp requirements.txt deployment/; fi
-          cd deployment && zip -r ../booksage-app.zip .
-      
-      - name: Upload deployment package
-        uses: actions/upload-artifact@v3
-        with:
-          name: booksage-app
-          path: booksage-app.zip
-  
-  # Uncomment the deploy job when you're ready to set up deployment
-  # deploy:
-  #   needs: build
-  #   if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-  #   runs-on: ubuntu-latest
-  #   
-  #   steps:
-  #     # Deployment steps will go here when you decide on a hosting platform
+    "
