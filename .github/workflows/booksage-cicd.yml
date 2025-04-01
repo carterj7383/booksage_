@@ -154,6 +154,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: booksage-app
+          path: .
       
       - name: Extract build files
         run: |
@@ -294,11 +295,13 @@ echo BookSage launched and opened in your browser!
         uses: actions/download-artifact@v3
         with:
           name: booksage-app
+          path: .
       
       - name: Download executable artifact
         uses: actions/download-artifact@v3
         with:
           name: booksage-executable
+          path: .
       
       - name: Create Release
         uses: actions/create-release@v1
