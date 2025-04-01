@@ -66,7 +66,7 @@ Discover your next favorite book with our intelligent recommendation system!
 
 ### Download
 
-[![Download Latest Release](https://img.shields.io/github/v/release/carterj7383/BookSage_?label=Download&style=for-the-badge)](Download BookSage)
+[![Download Latest Release](https://img.shields.io/github/v/release/carterj7383/BookSage?label=Download&style=for-the-badge)](https://github.com/carterj7383/BookSage/releases/latest/download/booksage-app.zip)
 
 ## 📋 Usage
 
