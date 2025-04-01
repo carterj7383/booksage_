@@ -1,6 +1,6 @@
 # 📚 BookSage
 
-![BookSage Banner](https://via.placeholder.com/1200x300/4F46E5/FFFFFF?text=BookSage+-+Your+Academic+Book+Community)
+![BookSage Banner](https://ibb.co/S7NrwLDd)
 
 BookSage is a comprehensive platform that provides personalized book recommendations based on users' preferred genres, popular content, and highly rated titles by fellow readers. 
 
