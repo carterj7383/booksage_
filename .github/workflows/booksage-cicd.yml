@@ -138,24 +138,76 @@ jobs:
           name: booksage-app
           path: booksage-app.zip
 
-  create-release:
+  create-executable:
     needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: windows-latest  # Windows runner for Windows executable
     
     steps:
       - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
       
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: booksage-app
       
+      - name: Extract build files
+        run: |
+          # Create directory for extracted files
+          mkdir extracted
+          # Extract zip file
+          Expand-Archive -Path booksage-app.zip -DestinationPath extracted
+      
+      - name: Install dependencies and PyInstaller
+        run: |
+          cd extracted
+          python -m pip install --upgrade pip
+          if (Test-Path requirements.txt) {
+            pip install -r requirements.txt
+          }
+          pip install pyinstaller
+      
+      - name: Create Executable
+        run: |
+          cd extracted
+          pyinstaller --onefile --windowed app.py --name BookSage
+      
+      - name: Upload executable as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: booksage-executable
+          path: extracted/dist/BookSage.exe
+  
+  create-release:
+    needs: [build, create-executable]
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Download zip artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: booksage-app
+      
+      - name: Download executable artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: booksage-executable
+          path: executable
+      
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          files: booksage-app.zip
+          files: |
+            booksage-app.zip
+            executable/BookSage.exe
           tag_name: v${{ github.run_number }}
           name: Release ${{ github.run_number }}
           draft: false
