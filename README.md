@@ -1,8 +1,6 @@
 # 📚 BookSage
 
 <div align="center">
-  
-<img src="https://via.placeholder.com/800x200/222222/b5e25a?text=BookSage" alt="BookSage Banner" width="800"/>
 
 BookSage is a comprehensive platform that provides personalized book recommendations based on users' preferred genres, popular content, and highly rated titles by fellow readers. 
 
