@@ -1,6 +1,6 @@
 # 📚 BookSage
 
-![BookSage Banner](https://i.ibb.co/XkX8xwf3/Screenshot-20250401-004447-Gallery.jpg)
+![BookSage Banner](https://ibb.co/gFH5HCtX)
 
 BookSage is a comprehensive platform that provides personalized book recommendations based on users' preferred genres, popular content, and highly rated titles by fellow readers. 
 
