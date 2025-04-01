@@ -64,31 +64,9 @@ Discover your next favorite book with our intelligent recommendation system!
 - Python 3.9 or higher
 - Pip package manager
 
-### Installation
+### Download
 
-1. Clone the repository
-   ```bash
-   git clone https://github.com/carterj7383/booksage_.git
-   cd booksage
-
-2. Set up a virtual environment
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-3. Install dependencies
-    ```bash
-    pip install -r requirements.txt
-
-4. Initialize the database
-    ```bash
-    python models.py
-
-5. Run the application
-    ```bash
-    python app.py
-
-6. Navigate to http://localhost:5000 in your browser
+[![Download Latest Release](https://img.shields.io/github/v/release/yourusername/BookSage?label=Download&style=for-the-badge)](Download BookSage)
 
 ## 📋 Usage
 
