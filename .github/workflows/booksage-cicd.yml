@@ -1,6 +1,6 @@
 name: BookSage CI/CD Pipeline
 
-#  Add permissions at the top level
+# Add permissions at the top level
 permissions:
   contents: write
   packages: write
@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v3
         with:
           python-version: '3.10'
           cache: 'pip'
@@ -46,7 +46,7 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v3
         with:
           python-version: '3.10'
       
@@ -114,7 +114,7 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v3
         with:
           python-version: '3.10'
       
@@ -133,7 +133,7 @@ jobs:
           cd deployment && zip -r ../booksage-app.zip .
       
       - name: Upload deployment package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: booksage-app
           path: booksage-app.zip
@@ -146,12 +146,12 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v3
         with:
           python-version: '3.10'
       
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: booksage-app
       
@@ -277,7 +277,7 @@ echo BookSage launched and opened in your browser!
           Compress-Archive -Path "dist\*" -DestinationPath "BookSage_App.zip"
       
       - name: Upload executable package as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: booksage-executable
           path: extracted/BookSage_App.zip
@@ -291,23 +291,42 @@ echo BookSage launched and opened in your browser!
       - uses: actions/checkout@v3
       
       - name: Download zip artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: booksage-app
       
       - name: Download executable artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: booksage-executable
       
       - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: |
-            booksage-app.zip
-            BookSage_App.zip
           tag_name: v${{ github.run_number }}
-          name: Release ${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
           draft: false
-          prerelease: false 
+          prerelease: false
+        id: create_release
+      
+      - name: Upload Release Asset (App Zip)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./booksage-app.zip
+          asset_name: booksage-app.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release Asset (Executable)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./BookSage_App.zip
+          asset_name: BookSage_App.zip
+          asset_content_type: application/zip
