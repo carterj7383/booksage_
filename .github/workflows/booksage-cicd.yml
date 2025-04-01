@@ -1,6 +1,6 @@
 name: BookSage CI/CD Pipeline
 
-# Add permissions at the top level
+#  Add permissions at the top level
 permissions:
   contents: write
   packages: write
@@ -310,4 +310,4 @@ echo BookSage launched and opened in your browser!
           tag_name: v${{ github.run_number }}
           name: Release ${{ github.run_number }}
           draft: false
-          prerelease: false
+          prerelease: false 
