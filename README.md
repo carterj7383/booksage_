@@ -61,7 +61,6 @@ Discover your next favorite book with our intelligent recommendation system!
 
 ### Prerequisites
 - Python 3.9 or higher
-- Pip package manager
 
 ### Download
 
