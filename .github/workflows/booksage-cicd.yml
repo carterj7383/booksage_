@@ -177,21 +177,21 @@ jobs:
         run: |
           cd extracted
           # Create a launcher script that properly starts the Flask app
-          echo '
+          cat > run_booksage.py << 'EOL'
 import sys
 from app import app
 
 if __name__ == "__main__":
     # Use this for production. Do not use debug mode.
     app.run(host="127.0.0.1", port=5000)
-          ' > run_booksage.py
+EOL
       
       - name: Create PyInstaller spec file
         shell: bash
         run: |
           cd extracted
           # Create a custom spec file to properly include Flask templates and static files
-          echo '
+          cat > booksage.spec << 'EOL'
 # -*- mode: python ; coding: utf-8 -*-
 
 block_cipher = None
@@ -246,14 +246,14 @@ exe = EXE(
     entitlements_file=None,
     icon=None,
 )
-          ' > booksage.spec
+EOL
       
       - name: Create desktop shortcut script
         shell: bash
         run: |
           cd extracted
           # Create a script that will make a desktop shortcut to open the app in the browser
-          echo '
+          cat > Start_BookSage.bat << 'EOL'
 @echo off
 echo Creating BookSage desktop shortcut...
 cd %~dp0
@@ -261,7 +261,7 @@ start "" "BookSage.exe"
 timeout /t 2 /nobreak > nul
 start "" "http://127.0.0.1:5000"
 echo BookSage launched and opened in your browser!
-          ' > Start_BookSage.bat
+EOL
       
       - name: Create Executable
         run: |
