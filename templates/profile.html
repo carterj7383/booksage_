@@ -1,42 +1,188 @@
-<!-- Profile page-->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-50">
-    <!-- Header -->
-    <header class="bg-blue-600 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-6">
-            <div class="flex justify-between items-center">
-                <h1 class="text-3xl font-bold">BookSage</h1>
-                <nav class="hidden md:flex space-x-6">
-                    <a href="#" class="hover:text-blue-200">Home</a>
-                    <a href="#" class="hover:text-blue-200">Browse</a>
-                    <a href="#" class="hover:text-blue-200">My Books</a>
-                    <a href="#" class="hover:text-blue-200">Community</a>
-                </nav>
-                <div class="flex items-center space-x-4">
-                    <a href="{{ url_for('logout') }}" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50">Log Out</a>
-                    <a href="{{ url_for('dashboard') }}" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50">Dashboard</a>
+{% extends "base.html" %}
+
+{% block title %}Profile - BookSage{% endblock %}
+
+{% block content %}
+<!-- profile header -->
+<section class="profile-header py-20 bg-cover bg-center relative">
+    <div class="absolute inset-0 bg-black bg-opacity-70"></div>
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="flex flex-col items-center">
+            <div class="w-32 h-32 rounded-full overflow-hidden mb-4 avatar">
+                <img src="/api/placeholder/200/200" alt="Profile avatar" class="w-full h-full object-cover">
+            </div>
+            <h2 class="text-4xl font-bold mb-2">{{ user[0] }} {{ user[1] }}</h2>
+            <p class="text-gray-300">{{ user[2] }}</p>
+            <div class="mt-6 flex space-x-3">
+                <button class="btn px-6 py-2 rounded-lg">Edit Profile</button>
+                <button class="bg-card border border-border text-white px-6 py-2 rounded-lg hover:border-green transition-colors duration-300">Account Settings</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- profile info -->
+<section class="py-10">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- sidebar -->
+            <div class="md:col-span-1">
+                <div class="bg-card rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-6 border-b border-border pb-4">Profile Information</h3>
                     
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-sm text-gray-400">Member Since</h4>
+                            <p class="text-lg">May 2023</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-sm text-gray-400">Books Read</h4>
+                            <p class="text-lg">32</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-sm text-gray-400">Favorite Categories</h4>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span class="px-3 py-1 bg-green bg-opacity-20 rounded-full text-xs txt-green">Computer Science</span>
+                                <span class="px-3 py-1 bg-green bg-opacity-20 rounded-full text-xs txt-green">Mathematics</span>
+                                <span class="px-3 py-1 bg-green bg-opacity-20 rounded-full text-xs txt-green">Physics</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-sm text-gray-400">Reading Goal</h4>
+                            <div class="mt-2">
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>32/50 books</span>
+                                    <span>64%</span>
+                                </div>
+                                <div class="w-full bg-border rounded-full h-2">
+                                    <div class="bg-green h-2 rounded-full" style="width: 64%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- bio -->
+                <div class="bg-card rounded-lg p-6 mt-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold">Bio</h3>
+                        <button class="text-sm txt-green hover:text-white">Edit</button>
+                    </div>
+                    <p class="text-gray-300">Computer Science graduate passionate about machine learning and artificial intelligence. Always looking for new tech books to expand my knowledge.</p>
+                </div>
+            </div>
+            
+            <!-- main content -->
+            <div class="md:col-span-2">
+                <!-- activity feed -->
+                <div class="bg-card rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-6">Recent Activity</h3>
+                    
+                    <div class="space-y-6">
+                        <!-- activity item -->
+                        <div class="flex">
+                            <div class="flex-shrink-0 mr-4">
+                                <img src="/api/placeholder/48/48" alt="Book cover" class="w-12 h-12 object-cover rounded">
+                            </div>
+                            <div>
+                                <p class="mb-1">You <span class="txt-green">started reading</span> <a href="#" class="font-medium hover:underline">Clean Code</a></p>
+                                <p class="text-sm text-gray-400">2 days ago</p>
+                            </div>
+                        </div>
+                        
+                        <!-- activity item -->
+                        <div class="flex">
+                            <div class="flex-shrink-0 mr-4">
+                                <img src="/api/placeholder/48/48" alt="Book cover" class="w-12 h-12 object-cover rounded">
+                            </div>
+                            <div>
+                                <p class="mb-1">You <span class="txt-green">finished reading</span> <a href="#" class="font-medium hover:underline">Machine Learning Basics</a></p>
+                                <p class="text-sm text-gray-400">1 week ago</p>
+                            </div>
+                        </div>
+                        
+                        <!-- activity item -->
+                        <div class="flex">
+                            <div class="flex-shrink-0 mr-4">
+                                <img src="/api/placeholder/48/48" alt="Book cover" class="w-12 h-12 object-cover rounded">
+                            </div>
+                            <div>
+                                <p class="mb-1">You <span class="txt-green">added</span> <a href="#" class="font-medium hover:underline">Introduction to Algorithms</a> to your reading list</p>
+                                <p class="text-sm text-gray-400">2 weeks ago</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="mt-6 w-full py-2 text-center border border-border rounded-lg hover:bg-card hover:border-green transition-colors duration-300">View All Activity</button>
+                </div>
+                
+                <!-- reading history -->
+                <div class="bg-card rounded-lg p-6 mt-6">
+                    <h3 class="text-xl font-bold mb-6">Reading History</h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-border">
+                                    <th class="text-left py-3 px-4">Book</th>
+                                    <th class="text-left py-3 px-4">Started</th>
+                                    <th class="text-left py-3 px-4">Finished</th>
+                                    <th class="text-left py-3 px-4">Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-border">
+                                    <td class="py-3 px-4">
+                                        <div class="flex items-center">
+                                            <img src="/api/placeholder/32/32" alt="Book cover" class="w-8 h-8 object-cover rounded mr-3">
+                                            <span>Machine Learning Basics</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-4">Apr 10, 2023</td>
+                                    <td class="py-3 px-4">May 5, 2023</td>
+                                    <td class="py-3 px-4">
+                                        <span class="stars">★★★★☆</span>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="border-b border-border">
+                                    <td class="py-3 px-4">
+                                        <div class="flex items-center">
+                                            <img src="/api/placeholder/32/32" alt="Book cover" class="w-8 h-8 object-cover rounded mr-3">
+                                            <span>Python Crash Course</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-4">Mar 1, 2023</td>
+                                    <td class="py-3 px-4">Mar 20, 2023</td>
+                                    <td class="py-3 px-4">
+                                        <span class="stars">★★★★★</span>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="border-b border-border">
+                                    <td class="py-3 px-4">
+                                        <div class="flex items-center">
+                                            <img src="/api/placeholder/32/32" alt="Book cover" class="w-8 h-8 object-cover rounded mr-3">
+                                            <span>Data Science Fundamentals</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-4">Jan 15, 2023</td>
+                                    <td class="py-3 px-4">Feb 28, 2023</td>
+                                    <td class="py-3 px-4">
+                                        <span class="stars">★★★☆☆</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <button class="mt-6 w-full py-2 text-center border border-border rounded-lg hover:bg-card hover:border-green transition-colors duration-300">View Full History</button>
                 </div>
             </div>
         </div>
-    </header>
-
-    <!-- Profile Section -->
-    <section class="bg-blue-700 text-white py-16">
-        <div class="container mx-auto px-4">
-            <div class="max-w-2xl mx-auto text-center">
-                <h2 class="text-4xl font-bold mb-4">Welcome, {{ user[0] }} {{ user[1] }}</h2>
-                <p class="text-xl mb-4">Email: {{ user[2] }}</p>
-                <p class="text-lg">User Profile</p>
-            </div>
-        </div>
-    </section>
-</body>
-</html>
+    </div>
+</section>
+{% endblock %}

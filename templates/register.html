@@ -1,39 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - BookSage</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100">
-    
-    <div class="container mx-auto mt-10 p-5">
-        <h2 class="text-3xl font-bold mb-5">BookSage- Register</h2>
+{% extends "base.html" %}
 
-        <div class="bg-white p-6 rounded shadow-md w-full max-w-md mx-auto">
-            <form method="POST">
-                <input type="text" name="first_name" placeholder="First Name" class="mb-4 p-2 w-full border rounded">
-                <input type="text" name="last_name" placeholder="Last Name" class="mb-4 p-2 w-full border rounded">
-                <input type="email" name="email" placeholder="Email" class="mb-4 p-2 w-full border rounded">
-                <input type="password" name="password" placeholder="Password" class="mb-4 p-2 w-full border rounded">
-                <input type="password" name="confirm_password" placeholder="Confirm Password" class="mb-4 p-2 w-full border rounded">
-                <button type="submit" name="register" class="bg-blue-500 text-white py-2 px-4 rounded w-full">Register</button>
-            </form>
-            <p class="mt-4"></p>
+{% block title %}Register - BookSage{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-form-wrapper">
+        <h2 class="auth-title">Create an Account</h2>
+        
+        <div class="form-box">
             {% with messages = get_flashed_messages() %}
-              {% if messages %}
-               <ul class="flashes">
-                {% for message in messages %}
-                 <li>{{ message }}</li>
-              {% endfor %}
-           </ul>
-         {% endif %}
-       {% endwith %}
-
-            <p class="mt-4">Already have an account? <a href="{{ url_for('login') }}" class="text-blue-600">Login here</a></p>
-            <p class="mt-4">Go Back to Home Page - <a href="{{ url_for('index') }}" class="text-blue-600">Home Page</a></p>
+                {% if messages %}
+                    <div class="alert error">
+                        <ul class="alert-list">
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST" class="auth-form">
+                <div class="name-fields">
+                    <div class="form-group">
+                        <label for="first_name" class="label">First Name</label>
+                        <input type="text" id="first_name" name="first_name" placeholder="First Name" class="input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="last_name" class="label">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" placeholder="Last Name" class="input" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="label">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Your email address" class="input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="label">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a password" class="input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm_password" class="label">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" class="input" required>
+                </div>
+                
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms" class="checkbox-label">I agree to the <a href="#" class="txt-green">Terms of Service</a> and <a href="#" class="txt-green">Privacy Policy</a></label>
+                </div>
+                
+                <button type="submit" class="btn register-submit-btn">Register</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Already have an account? <a href="{{ url_for('login') }}" class="txt-green">Login here</a></p>
+            </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}
