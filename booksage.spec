@@ -1,11 +1,14 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-
 a = Analysis(
-    ['app.py'],
-    pathex=[],
+    ['app.py'],  # Main script
+    pathex=['.'],  # Ensures PyInstaller looks in the current directory
     binaries=[],
-    datas=[],
+    datas=[
+        ('database.db', '.'),  # Include database file
+        ('templates', 'templates'),  # Include HTML templates
+        ('static', 'static')  # Include CSS, JS, etc.
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -14,6 +17,7 @@ a = Analysis(
     noarchive=False,
     optimize=0,
 )
+
 pyz = PYZ(a.pure)
 
 exe = EXE(
