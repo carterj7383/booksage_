@@ -1,12 +1,11 @@
+# -*- mode: python ; coding: utf-8 -*-
+
+
 a = Analysis(
     ['app.py'],
-    pathex=['.'],  
+    pathex=[],
     binaries=[],
-    datas=[
-        ('database.db', '.'),  # Database in root folder
-        ('templates', 'templates'),  # HTML templates
-        ('static', 'static')  # Static files like CSS, JS
-    ],
+    datas=[],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -15,7 +14,6 @@ a = Analysis(
     noarchive=False,
     optimize=0,
 )
-
 pyz = PYZ(a.pure)
 
 exe = EXE(
