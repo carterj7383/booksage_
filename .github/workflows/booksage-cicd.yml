@@ -180,7 +180,7 @@ jobs:
           Compress-Archive -Path "dist\*" -DestinationPath "BookSage_App.zip"
 
       - name: Upload executable package as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: booksage-executable
           path: extracted/BookSage_App.zip
