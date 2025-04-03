@@ -14,46 +14,41 @@ on:
 jobs:
   validate-code:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install flake8 pytest pytest-flask
-      
+          pip install -r requirements.txt flake8 pytest pytest-flask
+
       - name: Lint with flake8
-        continue-on-error: true
         run: |
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
   validate-templates:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
+
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
           pip install flask jinja2 beautifulsoup4
-      
+
       - name: Validate HTML templates
         run: |
           if [ -f scripts/validate_html.py ]; then
@@ -65,28 +60,26 @@ jobs:
   build:
     needs: [validate-code, validate-templates]
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
+
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      
+          pip install -r requirements.txt
+
       - name: Create deployment package
         run: |
           mkdir -p deployment
           cp -r templates deployment/ || echo "No templates directory found"
           cp -r static deployment/ || mkdir -p deployment/static
           cp *.py deployment/ || echo "No Python files found at root"
-          if [ -f requirements.txt ]; then cp requirements.txt deployment/; fi
+          cp requirements.txt deployment/ || echo "No requirements.txt found"
           cd deployment && zip -r ../booksage-app.zip .
 
       - name: Upload deployment package
@@ -98,16 +91,15 @@ jobs:
   create-executable:
     needs: build
     runs-on: windows-latest
-    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
+
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
@@ -115,124 +107,68 @@ jobs:
           path: .
 
       - name: Extract build files
-        run: Expand-Archive -Path booksage-app.zip -DestinationPath extracted
+        run: |
+          if (Test-Path extracted) { Remove-Item extracted -Recurse -Force }
+          Expand-Archive -Path booksage-app.zip -DestinationPath extracted
 
-      - name: Install dependencies and PyInstaller
+      - name: Install dependencies
         run: |
           cd extracted
-          python -m pip install --upgrade pip
-          if (Test-Path requirements.txt) {
-            pip install -r requirements.txt
+          pip install -r requirements.txt pyinstaller
+
+      - name: Check database existence
+        run: |
+          if (-Not (Test-Path "extracted/database.db")) { 
+              echo "ERROR: database.db not found!" 
+              exit 1 
           }
-          pip install pyinstaller flask werkzeug jinja2
 
-      - name: Create launcher script
-        shell: bash
+      - name: Create PyInstaller executable
         run: |
           cd extracted
-          echo 'import sys
-          from app import app
-          if __name__ == "__main__":
-              app.run(host="127.0.0.1", port=5000)' > run_booksage.py
-
-      - name: Create PyInstaller spec file
-        shell: bash
-        run: |
-          cd extracted
-          echo 'block_cipher = None
-          a = Analysis(["run_booksage.py"],
-              pathex=["."],
-              binaries=[],
-              datas=[("templates", "templates"),
-                     ("static", "static"),
-                     ("database.db", ".")],
-              hiddenimports=[],
-              hookspath=[],
-              runtime_hooks=[],
-              excludes=[],
-              noarchive=False)
-          pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
-          exe = EXE(pyz, a.scripts, [], exclude_binaries=True,
-              name="booksage", debug=False, strip=False, upx=True, console=True)
-          coll = COLLECT(exe, a.binaries, a.zipfiles, a.datas,
-              strip=False, upx=True, name="booksage")' > booksage.spec
-
-      - name: Create desktop shortcut script
-        run: |
-          cd extracted
-          echo '@echo off
-          echo Creating BookSage desktop shortcut...
-          cd %~dp0
-          start "" "BookSage.exe"
-          timeout /t 2 /nobreak > nul
-          start "" "http://127.0.0.1:5000"
-          echo BookSage launched and opened in your browser!' > Start_BookSage.bat
-
-      - name: Create Executable
-        run: |
-          cd extracted
-          pyinstaller booksage.spec
+          chmod +x run_booksage.py
+          pyinstaller --onefile --add-data "templates;templates" --add-data "static;static" --add-data "database.db;." run_booksage.py
 
       - name: Package final application
         run: |
-          cd extracted
-          copy Start_BookSage.bat dist\
-          Compress-Archive -Path "dist\*" -DestinationPath "BookSage_App.zip"
+          cd extracted/dist
+          Compress-Archive -Path * -DestinationPath ../../BookSage_App.zip
 
-      - name: Upload executable package as artifact
+      - name: Upload executable package
         uses: actions/upload-artifact@v4
         with:
           name: booksage-executable
-          path: extracted/BookSage_App.zip
+          path: BookSage_App.zip
 
   create-release:
     needs: [build, create-executable]
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       - name: Download zip artifact
         uses: actions/download-artifact@v4
         with:
           name: booksage-app
           path: .
-      
+
       - name: Download executable artifact
         uses: actions/download-artifact@v4
         with:
           name: booksage-executable
           path: .
-      
-      - name: Create Release
-        uses: actions/create-release@v1
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ github.run_number }}
-          release_name: Release ${{ github.run_number }}
+          name: "Release ${{ github.run_number }}"
           draft: false
           prerelease: false
-        id: create_release
-      
-      - name: Upload Release Asset (App Zip)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./booksage-app.zip
-          asset_name: booksage-app.zip
-          asset_content_type: application/zip
-
-      - name: Upload Release Asset (Executable)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./BookSage_App.zip
-          asset_name: BookSage_App.zip
-          asset_content_type: application/zip
+          files: |
+            booksage-app.zip
+            BookSage_App.zip
