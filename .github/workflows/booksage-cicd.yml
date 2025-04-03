@@ -38,7 +38,7 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-  
+
   validate-templates:
     runs-on: ubuntu-latest
     
@@ -172,116 +172,83 @@ jobs:
           }
           pip install pyinstaller flask werkzeug jinja2
       
-      - name: Create launcher script
-        shell: bash
-        run: |
-          cd extracted
-          # Create a launcher script that properly starts the Flask app
-          cat > run_booksage.py << 'EOL'
-import sys
-from app import app
-
-if __name__ == "__main__":
-    # Use this for production. Do not use debug mode.
-    app.run(host="127.0.0.1", port=5000)
-EOL
+          - name: Create launcher script
+          shell: bash
+          run: |
+            cd extracted
+            cat <<EOF > run_booksage.py
+            import sys
+            from app import app
+        
+            if __name__ == "__main__":
+                # Use this for production. Do not use debug mode.
+                app.run(host="127.0.0.1", port=5000)
+            EOF
       
-      - name: Create PyInstaller spec file
-        shell: bash
-        run: |
-          cd extracted
-          # Create a custom spec file to properly include Flask templates and static files
-          cat > booksage.spec << 'EOL'
-# -*- mode: python ; coding: utf-8 -*-
-
-block_cipher = None
-
-a = Analysis(
-    ["run_booksage.py"],
-    pathex=["."],
-    binaries=[],
-    datas=[
-        ("templates", "templates"),
-        ("static", "static"),
-        ("database.db", "."),
-    ],
-    hiddenimports=[
-        "flask",
-        "jinja2",
-        "werkzeug",
-        "sqlite3",
-        "flask.templating",
-    ],
-    hookspath=[],
-    hooksconfig={},
-    runtime_hooks=[],
-    excludes=[],
-    win_no_prefer_redirects=False,
-    win_private_assemblies=False,
-    cipher=block_cipher,
-    noarchive=False,
-)
-
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
-
-exe = EXE(
-    pyz,
-    a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
-    [],
-    name="BookSage",
-    debug=False,
-    bootloader_ignore_signals=False,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    runtime_tmpdir=None,
-    console=False,
-    disable_windowed_traceback=False,
-    argv_emulation=False,
-    target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
-    icon=None,
-)
-EOL
+            - name: Create PyInstaller spec file
+            shell: bash
+            run: |
+              cd extracted
+              # Create a custom spec file to properly include Flask templates and static files
+              cat <<EOF > booksage.spec
+              # -*- mode: python ; coding: utf-8 -*-
+              block_cipher = None
+          
+              a = Analysis(
+                  ["run_booksage.py"],
+                  pathex=["."],
+                  binaries=[],
+                  datas=[
+                      ("templates", "templates"),
+                      ("static", "static"),
+                      ("database.db", ".")
+                  ],
+                  hiddenimports=[],
+                  hookspath=[],
+                  runtime_hooks=[],
+                  excludes=[],
+                  noarchive=False
+              )
+              pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+              exe = EXE(pyz, a.scripts, [], exclude_binaries=True, name="booksage", debug=False, strip=False, upx=True, console=True)
+              coll = COLLECT(exe, a.binaries, a.zipfiles, a.datas, strip=False, upx=True, name="booksage")
+              EOF
+          
       
-      - name: Create desktop shortcut script
-        shell: bash
-        run: |
-          cd extracted
-          # Create a script that will make a desktop shortcut to open the app in the browser
-          cat > Start_BookSage.bat << 'EOL'
-@echo off
-echo Creating BookSage desktop shortcut...
-cd %~dp0
-start "" "BookSage.exe"
-timeout /t 2 /nobreak > nul
-start "" "http://127.0.0.1:5000"
-echo BookSage launched and opened in your browser!
-EOL
-      
-      - name: Create Executable
-        run: |
-          cd extracted
-          # Build the executable from the spec file
-          pyinstaller booksage.spec
-      
-      - name: Package final application
-        run: |
-          cd extracted
-          # Copy the batch file to the dist folder
-          copy Start_BookSage.bat dist\
-          # Create a zip with the executable and batch file
-          Compress-Archive -Path "dist\*" -DestinationPath "BookSage_App.zip"
-      
-      - name: Upload executable package as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: booksage-executable
-          path: extracted/BookSage_App.zip
+              - name: Create a desktop shortcut script
+              run: |
+                cd extracted
+                cat <<EOF > Start_BookSage.bat
+                @echo off
+                echo Creating BookSage desktop shortcut...
+                cd %~dp0
+                start "" "BookSage.exe"
+                timeout /t 2 /nobreak > nul
+                start "" "http://127.0.0.1:5000"
+                echo BookSage launched and opened in your browser!
+                EOF
+            
+            - name: Create Executable
+              run: |
+                cd extracted
+                # Build the executable from the spec file
+                pyinstaller booksage.spec
+            
+            - name: Package final application
+              run: |
+                cd extracted
+                # Copy the batch file to the dist folder
+                copy Start_BookSage.bat dist\
+                
+                # Create a zip with the executable and batch file
+                Compress-Archive -Path "dist\*" -DestinationPath "BookSage_App.zip"
+            
+            - name: Upload executable package as artifact
+              uses: actions/upload-artifact@v3
+              with:
+                name: booksage-executable
+                path: extracted/BookSage_App.zip
+            
   
   create-release:
     needs: [build, create-executable]
