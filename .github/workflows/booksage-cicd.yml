@@ -17,10 +17,13 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensures full Git history is available
       
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
           cache: 'pip'
@@ -28,25 +31,23 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -r requirements.txt || echo "No requirements.txt found"
           pip install flake8 pytest pytest-flask
       
       - name: Lint with flake8
-        continue-on-error: true
         run: |
-          # stop the build if there are Python syntax errors or undefined names
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
   validate-templates:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
       
@@ -55,73 +56,26 @@ jobs:
           python -m pip install --upgrade pip
           pip install flask jinja2 beautifulsoup4
       
-      - name: Create HTML validator script
-        run: |
-          cat > validate_html.py << 'EOF'
-          import os
-          import re
+      - name: Validate HTML templates
+        run: python scripts/validate_html.py  # Move validation logic to a script
 
-          TEMPLATES_DIR = 'templates'
-          issues_found = False
-
-          def check_html_comments(file_path):
-              try:
-                  with open(file_path, 'r', encoding='utf-8') as f:
-                      content = f.read()
-                  
-                  # Check for malformed HTML comments
-                  lines = content.split('\n')
-                  for i, line in enumerate(lines):
-                      line = line.strip()
-                      if line.startswith('-') and '-->' in line and not line.startswith('<!--'):
-                          print(f'ERROR in {file_path}, line {i+1}: Malformed HTML comment: {line}')
-                          return True
-                  
-                  return False
-              except Exception as e:
-                  print(f"Error processing {file_path}: {e}")
-                  return False
-
-          # Process all HTML files if the directory exists
-          if os.path.exists(TEMPLATES_DIR):
-              print(f"Checking HTML files in {TEMPLATES_DIR}")
-              for root, dirs, files in os.walk(TEMPLATES_DIR):
-                  for file in files:
-                      if file.endswith('.html'):
-                          file_path = os.path.join(root, file)
-                          print(f"Checking {file_path}")
-                          if check_html_comments(file_path):
-                              issues_found = True
-          else:
-              print('Templates directory not found, skipping check')
-
-          # Exit with success always (just log warnings)
-          if issues_found:
-              print('WARNING: HTML comment issues detected')
-          else:
-              print('SUCCESS: No HTML comment issues detected')
-          EOF
-      
-      - name: Run HTML validation
-        run: python validate_html.py
-  
   build:
     needs: [validate-code, validate-templates]
-    if: success() || failure()  # Continue even if validation shows issues
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
       
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -r requirements.txt || echo "No requirements.txt found"
       
       - name: Create deployment package
         run: |
@@ -133,170 +87,83 @@ jobs:
           cd deployment && zip -r ../booksage-app.zip .
       
       - name: Upload deployment package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: booksage-app
           path: booksage-app.zip
 
   create-executable:
     needs: build
-    runs-on: windows-latest  # Windows runner for Windows executable
+    runs-on: windows-latest  
     
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
       
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: booksage-app
           path: .
       
       - name: Extract build files
-        run: |
-          # Create directory for extracted files
-          mkdir extracted
-          # Extract zip file
-          Expand-Archive -Path booksage-app.zip -DestinationPath extracted
+        run: Expand-Archive -Path booksage-app.zip -DestinationPath extracted
       
       - name: Install dependencies and PyInstaller
         run: |
           cd extracted
           python -m pip install --upgrade pip
-          if (Test-Path requirements.txt) {
-            pip install -r requirements.txt
-          }
-          pip install pyinstaller flask werkzeug jinja2
+          pip install -r requirements.txt || echo "No requirements.txt found"
+          pip install pyinstaller
       
-          - name: Create launcher script
-          shell: bash
-          run: |
-            cd extracted
-            cat <<EOF > run_booksage.py
-            import sys
-            from app import app
-        
-            if __name__ == "__main__":
-                # Use this for production. Do not use debug mode.
-                app.run(host="127.0.0.1", port=5000)
-            EOF
+      - name: Create executable
+        run: |
+          cd extracted
+          pyinstaller --onefile --name booksage run_booksage.py
       
-            - name: Create PyInstaller spec file
-            shell: bash
-            run: |
-              cd extracted
-              # Create a custom spec file to properly include Flask templates and static files
-              cat <<EOF > booksage.spec
-              # -*- mode: python ; coding: utf-8 -*-
-              block_cipher = None
-          
-              a = Analysis(
-                  ["run_booksage.py"],
-                  pathex=["."],
-                  binaries=[],
-                  datas=[
-                      ("templates", "templates"),
-                      ("static", "static"),
-                      ("database.db", ".")
-                  ],
-                  hiddenimports=[],
-                  hookspath=[],
-                  runtime_hooks=[],
-                  excludes=[],
-                  noarchive=False
-              )
-              pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
-              exe = EXE(pyz, a.scripts, [], exclude_binaries=True, name="booksage", debug=False, strip=False, upx=True, console=True)
-              coll = COLLECT(exe, a.binaries, a.zipfiles, a.datas, strip=False, upx=True, name="booksage")
-              EOF
-          
+      - name: Package executable
+        run: |
+          cd extracted/dist
+          Compress-Archive -Path "booksage.exe" -DestinationPath "../../BookSage_App.zip"
       
-              - name: Create a desktop shortcut script
-              run: |
-                cd extracted
-                cat <<EOF > Start_BookSage.bat
-                @echo off
-                echo Creating BookSage desktop shortcut...
-                cd %~dp0
-                start "" "BookSage.exe"
-                timeout /t 2 /nobreak > nul
-                start "" "http://127.0.0.1:5000"
-                echo BookSage launched and opened in your browser!
-                EOF
-            
-            - name: Create Executable
-              run: |
-                cd extracted
-                # Build the executable from the spec file
-                pyinstaller booksage.spec
-            
-            - name: Package final application
-              run: |
-                cd extracted
-                # Copy the batch file to the dist folder
-                copy Start_BookSage.bat dist\
-                
-                # Create a zip with the executable and batch file
-                Compress-Archive -Path "dist\*" -DestinationPath "BookSage_App.zip"
-            
-            - name: Upload executable package as artifact
-              uses: actions/upload-artifact@v3
-              with:
-                name: booksage-executable
-                path: extracted/BookSage_App.zip
-            
-  
+      - name: Upload executable package
+        uses: actions/upload-artifact@v4
+        with:
+          name: booksage-executable
+          path: BookSage_App.zip
+
   create-release:
     needs: [build, create-executable]
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       
-      - name: Download zip artifact
-        uses: actions/download-artifact@v3
+      - name: Download App Zip
+        uses: actions/download-artifact@v4
         with:
           name: booksage-app
           path: .
       
-      - name: Download executable artifact
-        uses: actions/download-artifact@v3
+      - name: Download Executable Zip
+        uses: actions/download-artifact@v4
         with:
           name: booksage-executable
           path: .
       
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: v${{ github.run_number }}
-          release_name: Release ${{ github.run_number }}
-          draft: false
-          prerelease: false
-        id: create_release
-      
-      - name: Upload Release Asset (App Zip)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./booksage-app.zip
-          asset_name: booksage-app.zip
-          asset_content_type: application/zip
-
-      - name: Upload Release Asset (Executable)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./BookSage_App.zip
-          asset_name: BookSage_App.zip
-          asset_content_type: application/zip
+          name: Release ${{ github.run_number }}
+          files: |
+            booksage-app.zip
+            BookSage_App.zip
