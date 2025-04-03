@@ -90,4 +90,10 @@ def logout():
     return redirect(url_for('index'))  # Redirects to the home page
 
 if __name__ == '__main__':
+    
+import os
+print("Current Working Directory:", os.getcwd())
+print("Templates Folder Exists:", os.path.exists("templates"))
+print("mainPage.html Exists:", os.path.exists("templates/mainPage.html"))
+
     app.run(debug=True)
