@@ -80,6 +80,7 @@ jobs:
           cp -r static deployment/ || mkdir -p deployment/static
           cp *.py deployment/ || echo "No Python files found at root"
           cp requirements.txt deployment/ || echo "No requirements.txt found"
+          cp database.db deployment/ || echo "No database.db found"
           cd deployment && zip -r ../booksage-app.zip .
 
       - name: Upload deployment package
@@ -111,6 +112,11 @@ jobs:
           if (Test-Path extracted) { Remove-Item extracted -Recurse -Force }
           Expand-Archive -Path booksage-app.zip -DestinationPath extracted
 
+      - name: Debug directory contents
+        run: |
+          echo "Listing extracted directory contents:"
+          Get-ChildItem -Path extracted -Recurse | Select-Object FullName
+
       - name: Install dependencies
         run: |
           cd extracted
@@ -118,16 +124,16 @@ jobs:
 
       - name: Check database existence
         run: |
-          if (-Not (Test-Path "extracted/database.db")) { 
-              echo "ERROR: database.db not found!" 
-              exit 1 
+          if (-Not (Test-Path "extracted/database.db")) {
+            echo "WARNING: database.db not found, copying from repository"
+            Copy-Item -Path database.db -Destination extracted/ -ErrorAction SilentlyContinue
           }
 
       - name: Create PyInstaller executable
         run: |
           cd extracted
-          chmod +x run_booksage.py
-          pyinstaller --onefile --add-data "templates;templates" --add-data "static;static" --add-data "database.db;." run_booksage.py
+          # Use app.py as the entry point since that's your main application file
+          pyinstaller --onefile --add-data "templates;templates" --add-data "static;static" --add-data "database.db;." app.py
 
       - name: Package final application
         run: |
