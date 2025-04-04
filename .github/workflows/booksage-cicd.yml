@@ -97,3 +97,99 @@ jobs:
         with:
           name: booksage-app
           path: booksage-app.zip
+
+  create-executable:
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub token for authentication
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: booksage-app
+          path: .
+
+      - name: Extract build files
+        run: |
+          if (Test-Path extracted) { Remove-Item extracted -Recurse -Force }
+          Expand-Archive -Path booksage-app.zip -DestinationPath extracted
+
+      - name: Debug directory contents
+        run: |
+          echo "Listing extracted directory contents:"
+          Get-ChildItem -Path extracted -Recurse | Select-Object FullName
+
+      - name: Install dependencies
+        run: |
+          cd extracted
+          pip install -r requirements.txt pyinstaller
+
+      - name: Check database existence
+        run: |
+          if (-Not (Test-Path "extracted/database.db")) {
+            echo "WARNING: database.db not found, copying from repository"
+            Copy-Item -Path database.db -Destination extracted/ -ErrorAction SilentlyContinue
+          }
+
+      - name: Create PyInstaller executable
+        run: |
+          cd extracted
+          # Use app.py as the entry point since that's your main application file
+          pyinstaller --onefile --add-data "templates;templates" --add-data "static;static" --add-data "database.db;." app.py
+
+      - name: Package final application
+        run: |
+          cd extracted/dist
+          Compress-Archive -Path * -DestinationPath ../../BookSage_App.zip
+
+      - name: Upload executable package
+        uses: actions/upload-artifact@v4
+        with:
+          name: booksage-executable
+          path: BookSage_App.zip
+
+  create-release:
+    needs: [build, create-executable]
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub token for authentication
+
+      - name: Download zip artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: booksage-app
+          path: .
+
+      - name: Download executable artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: booksage-executable
+          path: .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          name: "Release ${{ github.run_number }}"
+          draft: false
+          prerelease: false
+          files: |
+            booksage-app.zip
+            BookSage_App.zip
