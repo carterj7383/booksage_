@@ -136,15 +136,45 @@ jobs:
 
       - name: Check database existence
         run: |
-          if (-Not (Test-Path "extracted/database.db")) {
+          # Use proper Windows path with backslashes
+          if (-Not (Test-Path "database.db")) {
             echo "WARNING: database.db not found, copying from repository"
-            Copy-Item -Path database.db -Destination extracted/ -ErrorAction SilentlyContinue
+            Copy-Item -Path database.db -Destination extracted\ -ErrorAction SilentlyContinue
+            
+            # Verify the copy operation
+            if (Test-Path "database.db") {
+              echo "Successfully copied database.db to extracted directory"
+            } else {
+              echo "Failed to copy database.db, checking if it exists in repository"
+              if (Test-Path "database.db") {
+                echo "database.db exists in repository, but copy failed"
+              } else {
+                echo "database.db not found in repository either!"
+              }
+            }
+          } else {
+            echo "database.db found in extracted directory"
           }
 
       - name: Create PyInstaller executable
         run: |
+          # First, let's check the actual paths and file structure
+          echo "Current directory structure:"
+          Get-ChildItem -Path . -Recurse | Select-Object FullName
+          
+          # Move to extracted directory
           cd extracted
-          # Use app.py as the entry point since that's your main application file
+          
+          # Make sure database.db exists
+          if (-Not (Test-Path "database.db")) {
+            echo "ERROR: database.db not found in extracted directory!"
+            echo "Current directory: $pwd"
+            echo "Files in current directory:"
+            Get-ChildItem -Path . | Select-Object Name
+            exit 1
+          }
+          
+          # Use app.py as the entry point with correct path formats for Windows
           pyinstaller --onefile --add-data "templates;templates" --add-data "static;static" --add-data "database.db;." app.py
 
       - name: Package final application
