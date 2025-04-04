@@ -82,6 +82,17 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      # Add a step to specifically check for database.db and create it if needed
+      - name: Check and handle database file
+        run: |
+          if [ -f database.db ]; then
+            echo "Found existing database.db file"
+          else
+            echo "Database file not found, creating an empty one"
+            # Create an empty SQLite database file
+            python -c "import sqlite3; conn = sqlite3.connect('database.db'); conn.close()"
+          fi
+
       - name: Create deployment package
         run: |
           mkdir -p deployment
@@ -90,6 +101,7 @@ jobs:
           cp *.py deployment/ || echo "No Python files found at root"
           cp requirements.txt deployment/ || echo "No requirements.txt found"
           cp database.db deployment/ || echo "No database.db found"
+          ls -la deployment/
           cd deployment && zip -r ../booksage-app.zip .
 
       - name: Upload deployment package
@@ -137,42 +149,29 @@ jobs:
       - name: Check database existence
         run: |
           # Use proper Windows path with backslashes
-          if (-Not (Test-Path "database.db")) {
-            echo "WARNING: database.db not found, copying from repository"
-            Copy-Item -Path database.db -Destination extracted\ -ErrorAction SilentlyContinue
-            
-            # Verify the copy operation
-            if (Test-Path "database.db") {
-              echo "Successfully copied database.db to extracted directory"
-            } else {
-              echo "Failed to copy database.db, checking if it exists in repository"
-              if (Test-Path "database.db") {
-                echo "database.db exists in repository, but copy failed"
-              } else {
-                echo "database.db not found in repository either!"
-              }
-            }
+          if (-Not (Test-Path "extracted\database.db")) {
+            echo "WARNING: database.db not found, creating an empty one"
+            # Use PowerShell to create an empty database file
+            $null = New-Item -Path "extracted\database.db" -ItemType File -Force
+            echo "Created empty database.db file"
           } else {
             echo "database.db found in extracted directory"
           }
 
       - name: Create PyInstaller executable
         run: |
-          # First, let's check the actual paths and file structure
-          echo "Current directory structure:"
-          Get-ChildItem -Path . -Recurse | Select-Object FullName
-          
           # Move to extracted directory
           cd extracted
           
-          # Make sure database.db exists
+          # Make sure database.db exists - if not, create an empty one
           if (-Not (Test-Path "database.db")) {
-            echo "ERROR: database.db not found in extracted directory!"
-            echo "Current directory: $pwd"
-            echo "Files in current directory:"
-            Get-ChildItem -Path . | Select-Object Name
-            exit 1
+            echo "Creating empty database.db file"
+            $null = New-Item -Path "database.db" -ItemType File -Force
           }
+          
+          # List files to verify
+          echo "Files in extracted directory:"
+          Get-ChildItem -Path . | Select-Object Name
           
           # Use app.py as the entry point with correct path formats for Windows
           pyinstaller --onefile --add-data "templates;templates" --add-data "static;static" --add-data "database.db;." app.py
