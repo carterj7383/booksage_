@@ -93,6 +93,37 @@ jobs:
             python -c "import sqlite3; conn = sqlite3.connect('database.db'); conn.close()"
           fi
 
+      # Create a special app_wrapper.py file for PyInstaller
+      - name: Create PyInstaller wrapper
+        run: |
+          cat > app_wrapper.py << 'EOF'
+          import os
+          import sys
+          
+          def resource_path(relative_path):
+              """ Get absolute path to resource, works for dev and for PyInstaller """
+              try:
+                  # PyInstaller creates a temp folder and stores path in _MEIPASS
+                  base_path = sys._MEIPASS
+              except Exception:
+                  base_path = os.path.abspath(".")
+          
+              return os.path.join(base_path, relative_path)
+          
+          # Now import and run the app
+          # This will override the Flask app initialization in app.py
+          import app
+          
+          # Patch the Flask app to use the correct paths
+          app.app.template_folder = resource_path('templates')
+          app.app.static_folder = resource_path('static')
+          
+          if __name__ == "__main__":
+              app.app.run(debug=False)
+          EOF
+          
+          echo "Created app_wrapper.py for PyInstaller"
+
       - name: Create deployment package
         run: |
           mkdir -p deployment
@@ -101,6 +132,7 @@ jobs:
           cp *.py deployment/ || echo "No Python files found at root"
           cp requirements.txt deployment/ || echo "No requirements.txt found"
           cp database.db deployment/ || echo "No database.db found"
+          cp app_wrapper.py deployment/ || echo "Failed to copy wrapper"
           ls -la deployment/
           cd deployment && zip -r ../booksage-app.zip .
 
@@ -173,8 +205,15 @@ jobs:
           echo "Files in extracted directory:"
           Get-ChildItem -Path . | Select-Object Name
           
-          # Use app.py as the entry point with correct path formats for Windows
-          pyinstaller --onefile --add-data "templates;templates" --add-data "static;static" --add-data "database.db;." app.py
+          # Use app_wrapper.py as the entry point with correct path formats for Windows
+          pyinstaller --onefile `
+            --add-data "templates;templates" `
+            --add-data "static;static" `
+            --add-data "database.db;." `
+            --hidden-import=flask `
+            --hidden-import=jinja2 `
+            app_wrapper.py `
+            --name BookSage
 
       - name: Package final application
         run: |

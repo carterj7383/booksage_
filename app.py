@@ -1,51 +1,51 @@
-import os
+from flask import Flask, render_template, redirect, url_for, request, session, flash
 import sqlite3
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+import os
+import sys
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# Initialize Flask App
-app = Flask(__name__, template_folder="templates", static_folder="static")
-app.secret_key = 'supersecretkey'  # Change this to a secure key in production
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
 
-# Debugging template directory
-print("Current Working Directory:", os.getcwd())
-print("Templates Folder Exists:", os.path.exists("templates"))
-print("mainPage.html Exists:", os.path.exists("templates/mainPage.html"))
+    return os.path.join(base_path, relative_path)
 
-# Database Connection Helper Function
+app = Flask(__name__, 
+            template_folder=resource_path('templates'),
+            static_folder=resource_path('static'))
+app.secret_key = 'your_secret_key'
+
 def get_db_connection():
-    conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row  # Enables column access by name
+    conn = sqlite3.connect(resource_path('database.db'))
+    conn.row_factory = sqlite3.Row
     return conn
 
-# Home Page (Main Page)
 @app.route('/')
 def index():
     return render_template('mainPage.html')
 
-# Login Route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-
+        
         conn = get_db_connection()
-        c = conn.cursor()
-        c.execute("SELECT * FROM users WHERE email = ?", (email,))
-        user = c.fetchone()
+        user = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
         conn.close()
-
-        if user and check_password_hash(user["password"], password):
-            session['user_id'] = user["id"]
+        
+        if user and check_password_hash(user['password'], password):
+            session['user_id'] = user['id']
+            session['email'] = user['email']
             return redirect(url_for('dashboard'))
         else:
-            flash('Invalid credentials', 'danger')
+            flash('Invalid email or password')
             return redirect(url_for('login'))
-
+    
     return render_template('login.html')
 
-# Register Route
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -53,65 +53,72 @@ def register():
         last_name = request.form['last_name']
         email = request.form['email']
         password = request.form['password']
-        confirm_password = request.form['confirm_password']
-
-        if password != confirm_password:
-            flash('Passwords do not match.', 'danger')
-            return redirect(url_for('register'))
-
-        hashed_password = generate_password_hash(password, method='scrypt')
-
+        
+        hashed_password = generate_password_hash(password)
+        
         conn = get_db_connection()
-        c = conn.cursor()
-        try:
-            c.execute("INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)",
-                      (first_name, last_name, email, hashed_password))
-            conn.commit()
-            flash('Registration successful! Please log in.', 'success')
-            return redirect(url_for('login'))
-        except sqlite3.IntegrityError:
-            flash('Email already exists.', 'danger')
-            return redirect(url_for('register'))
-        finally:
+        existing_user = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+        
+        if existing_user:
+            flash('Email already exists. Please choose a different one.')
             conn.close()
-
+            return redirect(url_for('register'))
+        
+        conn.execute('INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)',
+                     (first_name, last_name, email, hashed_password))
+        conn.commit()
+        conn.close()
+        
+        flash('Registration successful! Please log in.')
+        return redirect(url_for('login'))
+    
     return render_template('register.html')
 
-# Profile Route
-@app.route('/profile')
-def profile():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-
-    conn = get_db_connection()
-    c = conn.cursor()
-    c.execute("SELECT first_name, last_name, email FROM users WHERE id = ?", (session['user_id'],))
-    user = c.fetchone()
-    conn.close()
-
-    return render_template('profile.html', user=user)
-
-# Dashboard Route
 @app.route('/dashboard')
 def dashboard():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-
+    
     conn = get_db_connection()
-    c = conn.cursor()
-    c.execute("SELECT first_name, last_name, email FROM users WHERE id = ?", (session['user_id'],))
-    user = c.fetchone()
+    user = conn.execute('SELECT first_name, last_name FROM users WHERE id = ?', (session['user_id'],)).fetchone()
     conn.close()
-
+    
     return render_template('dashboard.html', user=user)
 
-# Logout Route
+@app.route('/profile')
+def profile():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    conn = get_db_connection()
+    user = conn.execute('SELECT first_name, last_name FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    conn.close()
+    
+    return render_template('profile.html', user=user)
+
 @app.route('/logout')
 def logout():
-    session.pop('user_id', None)
-    flash('You have been logged out.', 'info')
+    session.clear()
     return redirect(url_for('index'))
 
-# Run Flask App
+def init_db():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        first_name TEXT NOT NULL,
+        last_name TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL
+    )
+    ''')
+    
+    conn.commit()
+    conn.close()
+
+init_db()
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, host='0.0.0.0', port=5000)
