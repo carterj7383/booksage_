@@ -26,6 +26,10 @@ def get_db_connection():
 def index():
     return render_template('mainPage.html')
 
+@app.route('/browse')
+def browse():
+    return render_template('browse.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -91,7 +95,7 @@ def profile():
         return redirect(url_for('login'))
     
     conn = get_db_connection()
-    user = conn.execute('SELECT first_name, last_name FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    user = conn.execute('SELECT first_name, last_name, email FROM users WHERE id = ?', (session['user_id'],)).fetchone()
     conn.close()
     
     return render_template('profile.html', user=user)
