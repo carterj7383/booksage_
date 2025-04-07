@@ -58,19 +58,14 @@ def get_book_cover(isbn=None, title=None, author=None):
             query = "+".join(query_parts)
             google_books_url = f"https://www.googleapis.com/books/v1/volumes?q={query}&maxResults=1"
             
-            # Optional: Add your API key if you have one
-            # google_books_url += "&key=YOUR_GOOGLE_API_KEY"
-            
             response = requests.get(google_books_url)
             if response.status_code != 200:
-                print(f"Google Books API returned status code: {response.status_code}")
                 return url_for('static', filename='images/default-book-cover.svg')
                 
             data = response.json()
             
             if data.get('items'):
                 # Try to get the best available image
-                # Google Books provides several sizes: thumbnail, smallThumbnail, small, medium, large, extraLarge
                 image_links = data['items'][0]['volumeInfo'].get('imageLinks', {})
                 
                 # Try to get the best quality image available, in order of preference
@@ -82,7 +77,6 @@ def get_book_cover(isbn=None, title=None, author=None):
                         image_url = image_url.split('&zoom=')[0]
                         return image_url
                         
-            print(f"No images found for book: {title} by {author}")
             return url_for('static', filename='images/default-book-cover.svg')
                         
         except Exception as e:
@@ -134,6 +128,64 @@ def index():
     ]
     
     return render_template('mainPage.html', recommended_books=recommended_books)
+
+@app.route('/browse')
+def browse():
+    # Example books for browse page
+    browse_books = [
+        {
+            'title': 'Algorithms Unlocked',
+            'author': 'Thomas H. Cormen',
+            'isbn': '9780262033848',
+            'rating': 4.5,
+            'reviews': 86,
+            'description': 'An accessible introduction to algorithms that provides explanations of fundamental concepts alongside practical examples.',
+            'year': 2013,
+            'pages': 242
+        },
+        {
+            'title': 'Deep Learning with Python',
+            'author': 'François Chollet',
+            'isbn': '9781617295978',
+            'rating': 4.8,
+            'reviews': 124,
+            'description': 'Written by the creator of Keras, this book provides a practical introduction to deep learning with Python and TensorFlow.',
+            'year': 2021,
+            'pages': 504
+        },
+        {
+            'title': 'The Pragmatic Programmer',
+            'author': 'Andrew Hunt, David Thomas',
+            'isbn': '9780135957059',
+            'rating': 4.6,
+            'reviews': 192,
+            'description': 'A classic guide to software craftsmanship that offers practical advice for improving the development process in a pragmatic, impactful way.',
+            'year': 2019,
+            'pages': 352
+        },
+        {
+            'title': 'Database Systems: The Complete Book',
+            'author': 'Hector Garcia-Molina, Jeffrey D. Ullman, Jennifer Widom',
+            'isbn': '9780131873254',
+            'rating': 4.3,
+            'reviews': 104,
+            'description': 'A comprehensive introduction to modern database systems, covering everything from database design to query optimization and transaction management.',
+            'year': 2008,
+            'pages': 1152
+        },
+        {
+            'title': 'Structure and Interpretation of Computer Programs',
+            'author': 'Harold Abelson, Gerald Jay Sussman',
+            'isbn': '9780262510875',
+            'rating': 4.7,
+            'reviews': 213,
+            'description': 'A classic computer science textbook that teaches fundamental principles of programming using Scheme. Known for its philosophical approach to programming.',
+            'year': 1996,
+            'pages': 456
+        }
+    ]
+    
+    return render_template('browse.html', recommended_books=browse_books)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
