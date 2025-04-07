@@ -111,16 +111,16 @@ def index():
             'reviews': 256
         },
         {
-            'title': 'Data Science Fundamentals',
-            'author': 'Sarah Johnson',
-            'isbn': '9780596802363',
+            'title': 'Data Science for Business',  # Changed title to more popular book
+            'author': 'Foster Provost',  # Changed author
+            'isbn': '9781449361327',  # Updated ISBN
             'rating': 4.3,
             'reviews': 89
         },
         {
-            'title': 'Machine Learning Basics',
-            'author': 'Michael Chang',
-            'isbn': '9781617295836',
+            'title': 'Hands-On Machine Learning',  # Changed title to more popular book
+            'author': 'Aurélien Géron',  # Changed author
+            'isbn': '9781492032649',  # Updated ISBN
             'rating': 4.6,
             'reviews': 167
         }
