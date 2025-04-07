@@ -35,6 +35,7 @@ def get_book_cover(isbn=None, title=None, author=None):
     """
     # Method 1: Open Library Covers API (works well with ISBN)
     if isbn:
+        isbn = str(isbn).strip().replace('-', '')  # Ensure ISBN is clean
         open_library_url = f"https://covers.openlibrary.org/b/isbn/{isbn}-M.jpg"
         
         # Verify the image exists
@@ -58,13 +59,13 @@ def get_book_cover(isbn=None, title=None, author=None):
             query = "+".join(query_parts)
             google_books_url = f"https://www.googleapis.com/books/v1/volumes?q={query}&maxResults=1"
             
-            response = requests.get(google_books_url)
+            response = requests.get(google_books_url, timeout=5)
             if response.status_code != 200:
                 return url_for('static', filename='images/default-book-cover.svg')
                 
             data = response.json()
             
-            if data.get('items'):
+            if data.get('items') and data['items'][0].get('volumeInfo'):
                 # Try to get the best available image
                 image_links = data['items'][0]['volumeInfo'].get('imageLinks', {})
                 
@@ -76,8 +77,6 @@ def get_book_cover(isbn=None, title=None, author=None):
                         # Remove zoom parameters if they exist
                         image_url = image_url.split('&zoom=')[0]
                         return image_url
-                        
-            return url_for('static', filename='images/default-book-cover.svg')
                         
         except Exception as e:
             print(f"Google Books API error: {e}")
