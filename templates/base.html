@@ -27,6 +27,9 @@
                 <nav class="main-nav">
                     <a href="{{ url_for('index') }}" class="nav-link">Home</a>
                     <a href="{{ url_for('browse') }}" class="nav-link">Browse</a>
+                    {% if 'user_id' in session %}
+                        <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+                    {% endif %}
                     <a href="#" class="nav-link">My Books</a>
                     <a href="#" class="nav-link">Community</a>
                 </nav>
@@ -105,6 +108,9 @@
             <nav class="mobile-nav">
                 <a href="{{ url_for('index') }}" class="mobile-link">Home</a>
                 <a href="{{ url_for('browse') }}" class="mobile-link">Browse</a>
+                {% if 'user_id' in session %}
+                    <a href="{{ url_for('dashboard') }}" class="mobile-link">Dashboard</a>
+                {% endif %}
                 <a href="#" class="mobile-link">My Books</a>
                 <a href="#" class="mobile-link">Community</a>
                 {% if 'user_id' in session %}
