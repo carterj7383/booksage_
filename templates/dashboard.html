@@ -78,7 +78,7 @@
                     <!-- front -->
                     <div class="book-front">
                         <div class="book-cover">
-                            <img src="/api/placeholder/400/500" alt="Book cover" class="cover-img">
+                            <img src="{{ get_book_cover(isbn='9781492032649', title='Introduction to ML', author='Alex Johnson') }}" alt="Book cover" class="cover-img">
                             <div class="progress-badge">
                                 <p class="progress-text">75% Complete</p>
                             </div>
@@ -121,7 +121,7 @@
                     <!-- front -->
                     <div class="book-front">
                         <div class="book-cover">
-                            <img src="/api/placeholder/400/500" alt="Book cover" class="cover-img">
+                            <img src="{{ get_book_cover(isbn='9780132350884', title='Clean Code', author='Robert C. Martin') }}" alt="Book cover" class="cover-img">
                             <div class="progress-badge">
                                 <p class="progress-text">42% Complete</p>
                             </div>
@@ -164,7 +164,7 @@
                     <!-- front -->
                     <div class="book-front">
                         <div class="book-cover">
-                            <img src="/api/placeholder/400/500" alt="Book cover" class="cover-img">
+                            <img src="{{ get_book_cover(isbn='9781449361327', title='Data Science Fundamentals', author='Sarah Johnson') }}" alt="Book cover" class="cover-img">
                             <div class="progress-badge">
                                 <p class="progress-text">18% Complete</p>
                             </div>
@@ -203,32 +203,6 @@
         </div>
     </div>
 </section>
-                    
-                    <!-- back -->
-                    <div class="book-back">
-                        <h4>Introduction to ML</h4>
-                        <p>
-                            You started reading this book on May 15, 2023. You read about 20 pages per day.
-                        </p>
-                        <div class="book-actions">
-                            <button class="continue-btn">
-                                Continue Reading
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- spine -->
-                    <div class="spine"></div>
-                    
-                    <!-- animation -->
-                    <div class="flip"></div>
-                </div>
-            </div>
-            
-            <!-- More books would go here -->
-        </div>
-    </div>
-</section>
 
 <!-- reading list -->
 <section class="reading-list">
@@ -251,7 +225,7 @@
                     <tr class="table-row">
                         <td class="table-cell">
                             <div class="book-cell">
-                                <img src="/api/placeholder/40/40" alt="Book cover" class="book-thumb">
+                                <img src="{{ get_book_cover(isbn='9780132350884', title='Clean Code', author='Robert C. Martin') }}" alt="Book cover" class="book-thumb">
                                 <span>Clean Code</span>
                             </div>
                         </td>
