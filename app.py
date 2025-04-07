@@ -2,9 +2,9 @@ from flask import Flask, render_template, redirect, url_for, request, session, f
 import sqlite3
 import os
 import sys
-import requests  # Add this import for API calls
+import requests
 from werkzeug.security import generate_password_hash, check_password_hash
-from functools import lru_cache  # For caching book covers
+from functools import lru_cache
 
 def resource_path(relative_path):
     try:
@@ -19,26 +19,12 @@ app = Flask(__name__,
             static_folder=resource_path('static'))
 app.secret_key = 'your_secret_key'
 
-# Add the book cover function with caching
-@lru_cache(maxsize=100)  # Cache up to 100 book covers to avoid repeated API calls
+@lru_cache(maxsize=100)
 def get_book_cover(isbn=None, title=None, author=None):
-    """
-    Retrieve book cover image URL using multiple methods
-    
-    Args:
-        isbn (str, optional): ISBN of the book
-        title (str, optional): Title of the book
-        author (str, optional): Author of the book
-    
-    Returns:
-        str: URL of the book cover image
-    """
-    # Method 1: Open Library Covers API (works well with ISBN)
     if isbn:
-        isbn = str(isbn).strip().replace('-', '')  # Ensure ISBN is clean
+        isbn = str(isbn).strip().replace('-', '')
         open_library_url = f"https://covers.openlibrary.org/b/isbn/{isbn}-M.jpg"
         
-        # Verify the image exists
         try:
             response = requests.head(open_library_url)
             if response.status_code == 200:
@@ -46,10 +32,8 @@ def get_book_cover(isbn=None, title=None, author=None):
         except:
             pass
     
-    # Method 2: Google Books API (using title and author)
-    if title or author:  # Allow searching with just title or just author too
+    if title or author:
         try:
-            # Build search query
             query_parts = []
             if title:
                 query_parts.append(f"intitle:{title}")
@@ -66,25 +50,19 @@ def get_book_cover(isbn=None, title=None, author=None):
             data = response.json()
             
             if data.get('items') and data['items'][0].get('volumeInfo'):
-                # Try to get the best available image
                 image_links = data['items'][0]['volumeInfo'].get('imageLinks', {})
                 
-                # Try to get the best quality image available, in order of preference
                 for img_size in ['large', 'medium', 'small', 'thumbnail', 'smallThumbnail']:
                     if img_size in image_links:
-                        # Convert http to https and remove zoom parameters for better quality
                         image_url = image_links[img_size].replace('http:', 'https:')
-                        # Remove zoom parameters if they exist
                         image_url = image_url.split('&zoom=')[0]
                         return image_url
                         
         except Exception as e:
             print(f"Google Books API error: {e}")
     
-    # Method 3: If no internet or API failure, use local default cover
     return url_for('static', filename='images/default-book-cover.svg')
 
-# Make helper functions available to templates
 app.jinja_env.globals.update(get_book_cover=get_book_cover)
 
 def get_db_connection():
@@ -94,7 +72,6 @@ def get_db_connection():
 
 @app.route('/')
 def index():
-    # Example book data for recommendations
     recommended_books = [
         {
             'title': 'The Algorithm Design Manual',
@@ -111,16 +88,16 @@ def index():
             'reviews': 256
         },
         {
-            'title': 'Data Science for Business',  # Changed title to more popular book
-            'author': 'Foster Provost',  # Changed author
-            'isbn': '9781449361327',  # Updated ISBN
+            'title': 'Data Science for Business',
+            'author': 'Foster Provost',
+            'isbn': '9781449361327',
             'rating': 4.3,
             'reviews': 89
         },
         {
-            'title': 'Hands-On Machine Learning',  # Changed title to more popular book
-            'author': 'Aurélien Géron',  # Changed author
-            'isbn': '9781492032649',  # Updated ISBN
+            'title': 'Hands-On Machine Learning',
+            'author': 'Aurélien Géron',
+            'isbn': '9781492032649',
             'rating': 4.6,
             'reviews': 167
         }
@@ -130,7 +107,6 @@ def index():
 
 @app.route('/browse')
 def browse():
-    # Example books for browse page
     browse_books = [
         {
             'title': 'Algorithms Unlocked',
