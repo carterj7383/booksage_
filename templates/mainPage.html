@@ -3,7 +3,6 @@
 {% block title %}BookSage - Your Academic Book Community{% endblock %}
 
 {% block content %}
-    <!-- hero section -->
     <section class="hero py-20">
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto text-center">
@@ -31,18 +30,15 @@
         </div>
     </section>
 
-    <!-- recommendations - moved up to replace the featured book section -->
     <section class="py-24 mt-16">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold mb-2">Recommended for You</h2>
             <div class="w-20 h-1 bg-green mb-8"></div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Loop through recommended books -->
                 {% for book in recommended_books %}
                 <div class="book bg-card rounded-lg shadow-lg overflow-hidden glow">
                     <div class="book-inner">
-                        <!-- front -->
                         <div class="book-front">
                             <div class="relative">
                                 <img src="{{ get_book_cover(isbn=book.isbn, title=book.title, author=book.author) }}" 
@@ -72,7 +68,6 @@
                             </div>
                         </div>
                         
-                        <!-- back -->
                         <div class="book-back">
                             <h4>{{ book.title }}</h4>
                             <p>
@@ -85,10 +80,8 @@
                             </div>
                         </div>
                         
-                        <!-- spine -->
                         <div class="spine"></div>
                         
-                        <!-- animation -->
                         <div class="flip"></div>
                     </div>
                 </div>
@@ -97,7 +90,6 @@
         </div>
     </section>
 
-    <!-- categories -->
     <section class="py-16 bg-black bg-opacity-40">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold mb-2">Popular Categories</h2>
