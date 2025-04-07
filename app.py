@@ -2,7 +2,9 @@ from flask import Flask, render_template, redirect, url_for, request, session, f
 import sqlite3
 import os
 import sys
+import requests  # Add this import for API calls
 from werkzeug.security import generate_password_hash, check_password_hash
+from functools import lru_cache  # For caching book covers
 
 def resource_path(relative_path):
     try:
@@ -17,6 +19,81 @@ app = Flask(__name__,
             static_folder=resource_path('static'))
 app.secret_key = 'your_secret_key'
 
+# Add the book cover function with caching
+@lru_cache(maxsize=100)  # Cache up to 100 book covers to avoid repeated API calls
+def get_book_cover(isbn=None, title=None, author=None):
+    """
+    Retrieve book cover image URL using multiple methods
+    
+    Args:
+        isbn (str, optional): ISBN of the book
+        title (str, optional): Title of the book
+        author (str, optional): Author of the book
+    
+    Returns:
+        str: URL of the book cover image
+    """
+    # Method 1: Open Library Covers API (works well with ISBN)
+    if isbn:
+        open_library_url = f"https://covers.openlibrary.org/b/isbn/{isbn}-M.jpg"
+        
+        # Verify the image exists
+        try:
+            response = requests.head(open_library_url)
+            if response.status_code == 200:
+                return open_library_url
+        except:
+            pass
+    
+    # Method 2: Google Books API (using title and author)
+    if title or author:  # Allow searching with just title or just author too
+        try:
+            # Build search query
+            query_parts = []
+            if title:
+                query_parts.append(f"intitle:{title}")
+            if author:
+                query_parts.append(f"inauthor:{author}")
+            
+            query = "+".join(query_parts)
+            google_books_url = f"https://www.googleapis.com/books/v1/volumes?q={query}&maxResults=1"
+            
+            # Optional: Add your API key if you have one
+            # google_books_url += "&key=YOUR_GOOGLE_API_KEY"
+            
+            response = requests.get(google_books_url)
+            if response.status_code != 200:
+                print(f"Google Books API returned status code: {response.status_code}")
+                return url_for('static', filename='images/default-book-cover.svg')
+                
+            data = response.json()
+            
+            if data.get('items'):
+                # Try to get the best available image
+                # Google Books provides several sizes: thumbnail, smallThumbnail, small, medium, large, extraLarge
+                image_links = data['items'][0]['volumeInfo'].get('imageLinks', {})
+                
+                # Try to get the best quality image available, in order of preference
+                for img_size in ['large', 'medium', 'small', 'thumbnail', 'smallThumbnail']:
+                    if img_size in image_links:
+                        # Convert http to https and remove zoom parameters for better quality
+                        image_url = image_links[img_size].replace('http:', 'https:')
+                        # Remove zoom parameters if they exist
+                        image_url = image_url.split('&zoom=')[0]
+                        return image_url
+                        
+            print(f"No images found for book: {title} by {author}")
+            return url_for('static', filename='images/default-book-cover.svg')
+                        
+        except Exception as e:
+            print(f"Google Books API error: {e}")
+    
+    # Method 3: If no internet or API failure, use local default cover
+    return url_for('static', filename='images/default-book-cover.svg')
+
+# Make helper functions available to templates
+app.jinja_env.globals.update(get_book_cover=get_book_cover)
+
 def get_db_connection():
     conn = sqlite3.connect(resource_path('database.db'))
     conn.row_factory = sqlite3.Row
@@ -24,11 +101,39 @@ def get_db_connection():
 
 @app.route('/')
 def index():
-    return render_template('mainPage.html')
-
-@app.route('/browse')
-def browse():
-    return render_template('browse.html')
+    # Example book data for recommendations
+    recommended_books = [
+        {
+            'title': 'The Algorithm Design Manual',
+            'author': 'Steven S. Skiena',
+            'isbn': '9781849967204',
+            'rating': 4.5,
+            'reviews': 128
+        },
+        {
+            'title': 'Clean Code',
+            'author': 'Robert C. Martin',
+            'isbn': '9780132350884',
+            'rating': 4.8,
+            'reviews': 256
+        },
+        {
+            'title': 'Data Science Fundamentals',
+            'author': 'Sarah Johnson',
+            'isbn': '9780596802363',
+            'rating': 4.3,
+            'reviews': 89
+        },
+        {
+            'title': 'Machine Learning Basics',
+            'author': 'Michael Chang',
+            'isbn': '9781617295836',
+            'rating': 4.6,
+            'reviews': 167
+        }
+    ]
+    
+    return render_template('mainPage.html', recommended_books=recommended_books)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

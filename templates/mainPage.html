@@ -34,81 +34,8 @@
         <div class="relative mt-12 max-w-5xl mx-auto">
             <div class="absolute left-1/2 transform -translate-x-1/2 -bottom-24 w-full">
                 <div class="float opacity-80">
-                    <img src="/api/placeholder/1000/300" alt="Book collection" class="rounded-lg shadow-2xl mx-auto">
+                    <img src="{{ url_for('static', filename='images/default-book-cover.svg') }}" alt="Book collection" class="rounded-lg shadow-2xl mx-auto">
                     <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Book Section -->
-    <section class="featured-section py-16">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold mb-2">Featured Book</h2>
-            <div class="w-20 h-1 bg-green mb-8"></div>
-            
-            <div class="featured-book-container">
-                <div class="featured-grid">
-                    <!-- Book Image Column -->
-                    <div class="featured-img-col">
-                        <div class="featured-book-wrapper">
-                            <div class="featured-book glow">
-                                <img src="/api/placeholder/500/700" alt="Featured book cover" class="featured-cover">
-                                <div class="featured-shine"></div>
-                            </div>
-                            <div class="featured-shadow"></div>
-                        </div>
-                    </div>
-                    
-                    <!-- Book Info Column -->
-                    <div class="featured-info-col">
-                        <div class="featured-tag">New Release</div>
-                        <h3 class="featured-title">Advanced Machine Learning Algorithms</h3>
-                        <div class="featured-author">By <span class="txt-green">James Wilson</span></div>
-                        
-                        <div class="featured-rating">
-                            <div class="stars shine">★★★★★</div>
-                            <span class="rating-count">4.9 (72 reviews)</span>
-                        </div>
-                        
-                        <div class="featured-description">
-                            <p>A comprehensive guide to the most powerful and innovative machine learning algorithms available today. This book dives deep into the mathematics and theory while providing practical examples in Python.</p>
-                            
-                            <p>Perfect for data scientists and machine learning engineers who want to enhance their algorithmic toolkit with cutting-edge techniques.</p>
-                        </div>
-                        
-                        <div class="featured-details">
-                            <div class="detail-item">
-                                <span class="detail-label">Publication:</span>
-                                <span class="detail-value">March 2024</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Pages:</span>
-                                <span class="detail-value">485</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Category:</span>
-                                <span class="detail-value">Machine Learning</span>
-                            </div>
-                        </div>
-                        
-                        <div class="featured-actions">
-                            <button class="btn add-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                </svg>
-                                Add to Reading List
-                            </button>
-                            <button class="btn preview-btn">Preview</button>
-                        </div>
-                        
-                        <div class="featured-topics">
-                            <span class="topic-tag">Deep Learning</span>
-                            <span class="topic-tag">Neural Networks</span>
-                            <span class="topic-tag">Python</span>
-                            <span class="topic-tag">TensorFlow</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -121,23 +48,31 @@
             <div class="w-20 h-1 bg-green mb-8"></div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Book 1 -->
-                <div class="book bg-card rounded-lg shadow-lg overflow-hidden glow" style="height: 420px;">
+                <!-- Loop through recommended books -->
+                {% for book in recommended_books %}
+                <div class="book bg-card rounded-lg shadow-lg overflow-hidden glow">
                     <div class="book-inner">
                         <!-- front -->
                         <div class="book-front">
                             <div class="relative">
-                                <img src="/api/placeholder/400/500" alt="Book cover" class="w-full h-56 object-cover">
+                                <img src="{{ get_book_cover(isbn=book.isbn, title=book.title, author=book.author) }}" 
+                                    alt="{{ book.title }} cover" class="w-full h-56 object-cover">
                                 <div class="absolute top-0 right-0 bg-black bg-opacity-70 p-2 rounded-bl-lg">
-                                    <span class="stars shine">★★★★☆</span>
+                                    <span class="stars shine">
+                                        {% set full_stars = (book.rating | int) %}
+                                        {% set half_star = (book.rating - full_stars) >= 0.5 %}
+                                        {% for i in range(full_stars) %}★{% endfor %}
+                                        {% if half_star %}★{% endif %}
+                                        {% for i in range(5 - full_stars - (1 if half_star else 0)) %}☆{% endfor %}
+                                    </span>
                                 </div>
                                 <div class="page"></div>
                             </div>
                             <div class="p-5">
-                                <h3 class="font-bold text-lg mb-1">The Algorithm Design Manual</h3>
-                                <p class="text-gray-400 text-sm mb-3">Steven S. Skiena</p>
+                                <h3 class="font-bold text-lg mb-1">{{ book.title }}</h3>
+                                <p class="text-gray-400 text-sm mb-3">{{ book.author }}</p>
                                 <div class="flex items-center justify-between">
-                                    <span class="text-gray-400 text-sm">4.5 (128 reviews)</span>
+                                    <span class="text-gray-400 text-sm">{{ book.rating }} ({{ book.reviews }} reviews)</span>
                                     <button class="txt-green hover:text-white transition-colors duration-300">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -149,9 +84,9 @@
                         
                         <!-- back -->
                         <div class="book-back">
-                            <h4>The Algorithm Design Manual</h4>
+                            <h4>{{ book.title }}</h4>
                             <p>
-                                This book covers algorithm design and analysis. Great for computer science students who need to learn how to create and analyze algorithms.
+                                This book by {{ book.author }} is highly rated at {{ book.rating }} stars.
                             </p>
                             <div class="mt-auto">
                                 <button class="w-full bg-green text-black py-2 rounded-lg hover:bg-lt-green transition-colors duration-300">
@@ -167,147 +102,7 @@
                         <div class="flip"></div>
                     </div>
                 </div>
-
-                <!-- Book 2 -->
-                <div class="book bg-card rounded-lg shadow-lg overflow-hidden glow" style="height: 420px;">
-                    <div class="book-inner">
-                        <!-- front -->
-                        <div class="book-front">
-                            <div class="relative">
-                                <img src="/api/placeholder/400/500" alt="Book cover" class="w-full h-56 object-cover">
-                                <div class="absolute top-0 right-0 bg-black bg-opacity-70 p-2 rounded-bl-lg">
-                                    <span class="stars shine">★★★★★</span>
-                                </div>
-                                <div class="page"></div>
-                            </div>
-                            <div class="p-5">
-                                <h3 class="font-bold text-lg mb-1">Clean Code</h3>
-                                <p class="text-gray-400 text-sm mb-3">Robert C. Martin</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-400 text-sm">4.8 (256 reviews)</span>
-                                    <button class="txt-green hover:text-white transition-colors duration-300">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- back -->
-                        <div class="book-back">
-                            <h4>Clean Code</h4>
-                            <p>
-                                Learn how to write better code! This book shows programming best practices and how to keep your code clean, readable and maintainable.
-                            </p>
-                            <div class="mt-auto">
-                                <button class="w-full bg-green text-black py-2 rounded-lg hover:bg-lt-green transition-colors duration-300">
-                                    Add to Reading List
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- spine -->
-                        <div class="spine"></div>
-                        
-                        <!-- animation -->
-                        <div class="flip"></div>
-                    </div>
-                </div>
-
-                <!-- Book 3 -->
-                <div class="book bg-card rounded-lg shadow-lg overflow-hidden glow" style="height: 420px;">
-                    <div class="book-inner">
-                        <!-- front -->
-                        <div class="book-front">
-                            <div class="relative">
-                                <img src="/api/placeholder/400/500" alt="Book cover" class="w-full h-56 object-cover">
-                                <div class="absolute top-0 right-0 bg-black bg-opacity-70 p-2 rounded-bl-lg">
-                                    <span class="stars shine">★★★★☆</span>
-                                </div>
-                                <div class="page"></div>
-                            </div>
-                            <div class="p-5">
-                                <h3 class="font-bold text-lg mb-1">Data Science Fundamentals</h3>
-                                <p class="text-gray-400 text-sm mb-3">Sarah Johnson</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-400 text-sm">4.3 (89 reviews)</span>
-                                    <button class="txt-green hover:text-white transition-colors duration-300">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- back -->
-                        <div class="book-back">
-                            <h4>Data Science Fundamentals</h4>
-                            <p>
-                                Introduction to key concepts in data science, statistics, and machine learning. Good for beginners who want to understand the basics.
-                            </p>
-                            <div class="mt-auto">
-                                <button class="w-full bg-green text-black py-2 rounded-lg hover:bg-lt-green transition-colors duration-300">
-                                    Add to Reading List
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- spine -->
-                        <div class="spine"></div>
-                        
-                        <!-- animation -->
-                        <div class="flip"></div>
-                    </div>
-                </div>
-
-                <!-- Book 4 -->
-                <div class="book bg-card rounded-lg shadow-lg overflow-hidden glow" style="height: 420px;">
-                    <div class="book-inner">
-                        <!-- front -->
-                        <div class="book-front">
-                            <div class="relative">
-                                <img src="/api/placeholder/400/500" alt="Book cover" class="w-full h-56 object-cover">
-                                <div class="absolute top-0 right-0 bg-black bg-opacity-70 p-2 rounded-bl-lg">
-                                    <span class="stars shine">★★★★☆</span>
-                                </div>
-                                <div class="page"></div>
-                            </div>
-                            <div class="p-5">
-                                <h3 class="font-bold text-lg mb-1">Machine Learning Basics</h3>
-                                <p class="text-gray-400 text-sm mb-3">Michael Chang</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-400 text-sm">4.6 (167 reviews)</span>
-                                    <button class="txt-green hover:text-white transition-colors duration-300">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- back -->
-                        <div class="book-back">
-                            <h4>Machine Learning Basics</h4>
-                            <p>
-                                Covers fundamental concepts in machine learning, including supervised and unsupervised learning, neural networks, and deep learning.
-                            </p>
-                            <div class="mt-auto">
-                                <button class="w-full bg-green text-black py-2 rounded-lg hover:bg-lt-green transition-colors duration-300">
-                                    Add to Reading List
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- spine -->
-                        <div class="spine"></div>
-                        
-                        <!-- animation -->
-                        <div class="flip"></div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>

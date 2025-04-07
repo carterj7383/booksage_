@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400">
+  <!-- Base background with your site's card color -->
+  <rect width="300" height="400" fill="#1e1e1e" rx="8" ry="8" />
+  
+  <!-- Subtle gradient overlay matching your site's dark theme -->
+  <rect width="300" height="400" fill="url(#cardGradient)" rx="8" ry="8" />
+  
+  <!-- Border matching your site's border style -->
+  <rect width="298" height="398" x="1" y="1" stroke="#2a2a2a" stroke-width="2" fill="none" rx="7" ry="7" />
+  
+  <!-- Book spine effect -->
+  <path d="M30,20 L270,20 C275,20 280,25 280,30 L280,350 C280,355 275,360 270,360 L30,360 C25,360 20,355 20,350 L20,30 C20,25 25,20 30,20 Z" 
+        fill="#121212" />
+  
+  <!-- Book cover main area -->
+  <rect x="40" y="40" width="220" height="300" rx="3" ry="3" fill="#2a2a2a" />
+  
+  <!-- BookSage logo and text -->
+  <g transform="translate(150, 140)">
+    <!-- Book icon -->
+    <path d="M-40,-20 L40,-20 L40,20 L-40,20 L-40,-20 Z" fill="none" stroke="#c5db94" stroke-width="2" />
+    <path d="M-20,-20 L-20,20" stroke="#c5db94" stroke-width="2" />
+    <path d="M0,-20 L0,20" stroke="#c5db94" stroke-width="2" />
+    <path d="M20,-20 L20,20" stroke="#c5db94" stroke-width="2" />
+    
+    <!-- BOOKSAGE text -->
+    <text x="0" y="60" font-family="'Playfair Display', serif" font-size="24" fill="#c5db94" text-anchor="middle" font-weight="700">BOOK</text>
+    <text x="0" y="85" font-family="'Playfair Display', serif" font-size="24" fill="#ffffff" text-anchor="middle" font-weight="700">SAGE</text>
+  </g>
+  
+  <!-- Decorative elements matching your site's aesthetic -->
+  <rect x="40" y="280" width="220" height="1" fill="#c5db94" opacity="0.5" />
+  <rect x="70" y="290" width="160" height="30" rx="4" ry="4" fill="#121212" />
+  <rect x="90" y="300" width="120" height="10" fill="#2a2a2a" rx="2" ry="2" />
+  
+  <!-- Author line representation -->
+  <rect x="70" y="330" width="160" height="10" rx="2" ry="2" fill="#2a2a2a" opacity="0.7" />
+  
+  <!-- Subtle glow effect on hover (matches your site's glow effect) -->
+  <rect width="300" height="400" rx="8" ry="8" fill="url(#glowGradient)" opacity="0.12">
+    <animate attributeName="opacity" values="0.12;0.2;0.12" dur="3s" repeatCount="indefinite" />
+  </rect>
+  
+  <!-- Subtle page texture -->
+  <rect x="40" y="40" width="220" height="300" fill="url(#pageTexture)" opacity="0.03" />
+  
+  <!-- Definitions -->
+  <defs>
+    <!-- Card gradient matching your site's look -->
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1e1e" />
+      <stop offset="100%" stop-color="#121212" />
+    </linearGradient>
+    
+    <!-- Glow gradient with your site's accent color -->
+    <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#c5db94" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#c5db94" stop-opacity="0" />
+    </radialGradient>
+    
+    <!-- Subtle page texture pattern -->
+    <pattern id="pageTexture" patternUnits="userSpaceOnUse" width="50" height="50" patternTransform="rotate(45)">
+      <rect width="50" height="50" fill="#ffffff" opacity="0.05" />
+      <path d="M0,0 L50,0 L50,0.5 L0,0.5 Z" fill="#ffffff" opacity="0.1" />
+      <path d="M0,10 L50,10 L50,10.5 L0,10.5 Z" fill="#ffffff" opacity="0.05" />
+      <path d="M0,20 L50,20 L50,20.5 L0,20.5 Z" fill="#ffffff" opacity="0.05" />
+      <path d="M0,30 L50,30 L50,30.5 L0,30.5 Z" fill="#ffffff" opacity="0.05" />
+      <path d="M0,40 L50,40 L50,40.5 L0,40.5 Z" fill="#ffffff" opacity="0.05" />
+    </pattern>
+  </defs>
+</svg>
