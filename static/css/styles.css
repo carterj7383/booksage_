@@ -3032,3 +3032,11 @@ tr {
     text-align: left;
   }
   
+  .book-list {
+    display: none;
+  }
+  
+  .book-list.active {
+    display: block;
+  }
+  

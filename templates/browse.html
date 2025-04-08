@@ -33,14 +33,14 @@
         </div>
 
         <div class="view-toggle">
-          <button class="view-btn active">
+          <button class="view-btn active" id="listViewBtn">
             <!-- List View Icon -->
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M4 6h16M4 10h16M4 14h16M4 18h16" />
             </svg>
           </button>
-          <button class="view-btn">
+          <button class="view-btn" id="gridViewBtn">
             <!-- Grid View Icon -->
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -52,7 +52,7 @@
     </div>
 
     <!-- Browse Books List View -->
-    <div class="browse-list view-list active" id="bookView">
+    <div class="book-list list-view active" id="listView">
       {% for book in books %}
       <div class="book-list-item view-item">
         <div class="book-list-cover">
@@ -111,7 +111,7 @@
     </div>
 
     <!-- Browse Books Grid View -->
-    <div class="browse-grid view-grid hidden" id="gridView">
+    <div class="book-list grid-view" id="gridView" style="display: none;">
       {% for book in books %}
       <div class="book-grid-item view-item">
         <img src="{{ get_book_cover(isbn=book.isbn, title=book.title, author=book.author) }}"
@@ -124,26 +124,6 @@
   </div>
 </section>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const toggleButtons = document.querySelectorAll(".view-btn");
-    const listView = document.getElementById("bookView");
-    const gridView = document.getElementById("gridView");
-
-    toggleButtons.forEach((btn, index) => {
-      btn.addEventListener("click", () => {
-        toggleButtons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        if (index === 0) {
-          listView.classList.add("active");
-          gridView.classList.add("hidden");
-        } else {
-          listView.classList.remove("active");
-          gridView.classList.remove("hidden");
-        }
-      });
-    });
-  });
-</script>
+<!-- Link external JS -->
+<script src="{{ url_for('static', filename='js/toggleView.js') }}"></script>
 {% endblock %}
