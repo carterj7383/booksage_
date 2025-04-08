@@ -2917,7 +2917,7 @@ tr {
     }
 }
 
-/* Pagination */
+/* Pagination Styles */
 .pagination {
     display: flex;
     align-items: center;
@@ -2970,73 +2970,96 @@ tr {
     height: 2.5rem;
 }
 
-/* View Toggle Layouts */
+/* View Toggle Button Styles */
+.view-toggle {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.view-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+    padding: 0.5rem;
+}
+
+.view-btn.active {
+    opacity: 1;
+}
+
+.view-btn .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    stroke: currentColor;
+}
+
+/* View Layouts */
+.book-list {
+    display: none;
+}
+
+.book-list.active {
+    display: block;
+}
 
 /* List view layout */
 .book-list.list-view {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-  }
-  
-  /* Grid view layout */
-  .book-list.grid-view {
+}
+
+/* Grid view layout */
+.book-list.grid-view {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1.5rem;
     align-items: start;
-  }
-  
-  /* Book card styles */
-  .book-card {
+}
+
+/* Book card styles */
+.book-card {
     background-color: #1f1f1f;
     padding: 1rem;
     border-radius: 10px;
     display: flex;
     gap: 1rem;
-  }
-  
-  /* Horizontal layout for list */
-  .list-view .book-card {
+}
+
+/* Horizontal layout for list */
+.list-view .book-card {
     flex-direction: row;
-  }
-  
-  /* Vertical layout for grid */
-  .grid-view .book-card {
+}
+
+/* Vertical layout for grid */
+.grid-view .book-card {
     flex-direction: column;
     align-items: center;
     text-align: center;
-  }
-  
-  /* Book cover image */
-  .book-card img {
+}
+
+/* Book cover image */
+.book-card img {
     width: 100%;
     height: auto;
     max-width: 140px;
     object-fit: contain;
-  }
-  
-  /* Make image fit grid nicely */
-  .grid-view .book-card img {
+}
+
+/* Make image fit grid nicely */
+.grid-view .book-card img {
     max-width: 100%;
-  }
-  
-  /* Title and author alignment */
-  .grid-view .book-title,
-  .grid-view .book-author {
+}
+
+/* Title and author alignment */
+.grid-view .book-title,
+.grid-view .book-author {
     text-align: center;
-  }
-  
-  .list-view .book-title,
-  .list-view .book-author {
+}
+
+.list-view .book-title,
+.list-view .book-author {
     text-align: left;
-  }
-  
-  .book-list {
-    display: none;
-  }
-  
-  .book-list.active {
-    display: block;
-  }
-  
+}
