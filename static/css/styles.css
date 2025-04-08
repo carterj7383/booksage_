@@ -3070,15 +3070,11 @@ tr {
 }
 
 .book-list.active {
-    display: grid;
-}
-
-.book-list.list-view {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    display: block;
 }
 
 .book-list.grid-view {
+    display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5rem;
 }
@@ -3086,18 +3082,12 @@ tr {
 .book-list-item,
 .book-grid-item {
     background-color: #1f1f1f;
-    border-radius: 1rem;
-    padding: 1.5rem;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    transition: transform 0.3s ease;
-}
-
-.book-list-item:hover,
-.book-grid-item:hover {
-    transform: scale(1.02);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    gap: 1rem;
 }
 
 .list-view .book-list-item {
@@ -3107,13 +3097,20 @@ tr {
 .grid-view .book-grid-item {
     flex-direction: column;
     text-align: center;
+    align-items: center;
+}
+
+.book-list-cover,
+.book-grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .book-thumb {
-    max-width: 150px;
-    max-height: 250px;
+    max-width: 140px;
+    max-height: 200px;
     object-fit: contain;
-    border-radius: 0.5rem;
 }
 
 .grid-view .book-thumb {
@@ -3121,30 +3118,26 @@ tr {
     margin-bottom: 1rem;
 }
 
-.book-list-info,
-.book-grid-info {
+.book-list-info {
     flex-grow: 1;
 }
 
-.book-list-title,
-.book-grid-title {
-    font-family: 'Playfair Display', serif;
+.book-list-title {
     font-size: 1.25rem;
-    font-weight: 700;
-    color: #ffffff;
+    font-weight: bold;
     margin-bottom: 0.5rem;
 }
 
-.book-list-author,
-.book-grid-author {
+.book-list-author {
     color: #8bc34a;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .book-list-meta {
     display: flex;
     gap: 1rem;
     color: #aaa;
+    margin-top: 0.5rem;
 }
 
 .meta-item {
@@ -3161,22 +3154,18 @@ tr {
 
 .book-list-actions {
     display: flex;
-    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 1rem;
 }
 
-.btn {
+.list-btn {
     background-color: #8bc34a;
     color: #121212;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.btn:hover {
-    background-color: #a5d66a;
 }
 
 .favorite-btn {
@@ -3189,9 +3178,4 @@ tr {
     width: 1.5rem;
     height: 1.5rem;
     stroke: #8bc34a;
-    transition: fill 0.3s ease;
-}
-
-.favorite-icon:hover {
-    fill: #8bc34a;
 }
