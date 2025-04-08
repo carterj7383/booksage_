@@ -12,75 +12,7 @@ Discover your next favorite book with our intelligent recommendation system!
 
 </div>
 
-<style>
-  body {
-    background-color: #000000;
-    color: #e6e6e6;
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    color: #ffffff;
-  }
-  
-  a {
-    color: #c8ff7d;
-    text-decoration: none;
-  }
-  
-  a:hover {
-    text-decoration: underline;
-  }
-  
-  code {
-    background-color: #333333;
-    color: #d1f7a0;
-    padding: 0.2em 0.4em;
-    border-radius: 3px;
-  }
-  
-  pre {
-    background-color: #333333;
-    border: 1px solid #444444;
-    border-radius: 6px;
-    padding: 16px;
-  }
-  
-  blockquote {
-    color: #a0a0a0;
-    border-left: 4px solid #444444;
-    padding: 0 16px;
-  }
-  
-  hr {
-    background-color: #444444;
-    border: none;
-    height: 1px;
-  }
-  
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 16px 0;
-    border: 1px solid #444444;
-  }
-  
-  th, td {
-    padding: 8px 12px;
-    border: 1px solid #444444;
-  }
-  
-  th {
-    background-color: #2c2c2c;
-  }
-  
-  img {
-    max-width: 100%;
-  }
-  
-  ul li strong {
-    color: #b5e25a;
-  }
-</style>
+
 
 ## ✨ Features
 
