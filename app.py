@@ -15,8 +15,8 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 app = Flask(__name__, 
-            template_folder=resource_path('templates'),
-            static_folder=resource_path('static'))
+            template_folder='templates',
+            static_folder='static')
 app.secret_key = 'your_secret_key'
 
 @lru_cache(maxsize=100)
