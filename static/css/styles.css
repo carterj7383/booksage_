@@ -3064,6 +3064,97 @@ tr {
     stroke: #121212;
 }
 
+/* Browse Books Page Styling */
+.browse-section {
+    background-color: #121212;
+    color: #ffffff;
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.browse-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.browse-title-wrap h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.browse-title-wrap .title-underline {
+    width: 4rem;
+    height: 0.25rem;
+    background-color: #8bc34a;
+}
+
+.browse-filters {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.filter-select {
+    background-color: #1f1f1f;
+    color: #ffffff;
+    border: 1px solid #333;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    cursor: pointer;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.view-btn {
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.view-btn:hover {
+    background-color: #2c2c2c;
+}
+
+.view-btn.active {
+    background-color: #8bc34a;
+    border-color: #8bc34a;
+}
+
+.view-btn .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    stroke: #ffffff;
+}
+
+.view-btn.active .icon {
+    stroke: #121212;
+}
+
 /* Book List Styles */
 .book-list {
     display: none;
@@ -3088,6 +3179,13 @@ tr {
     display: flex;
     align-items: center;
     gap: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.book-list-item:hover,
+.book-grid-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
 .list-view .book-list-item {
@@ -3125,6 +3223,7 @@ tr {
 .book-list-title {
     font-size: 1.25rem;
     font-weight: bold;
+    color: #ffffff;
     margin-bottom: 0.5rem;
 }
 
@@ -3159,13 +3258,20 @@ tr {
     margin-top: 1rem;
 }
 
-.list-btn {
+.list-btn,
+.add-to-list-btn {
     background-color: #8bc34a;
     color: #121212;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.list-btn:hover,
+.add-to-list-btn:hover {
+    background-color: #a5d66a;
 }
 
 .favorite-btn {
@@ -3178,4 +3284,23 @@ tr {
     width: 1.5rem;
     height: 1.5rem;
     stroke: #8bc34a;
+    transition: fill 0.3s ease;
+}
+
+.favorite-icon:hover {
+    fill: #8bc34a;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .browse-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .browse-filters {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
 }
