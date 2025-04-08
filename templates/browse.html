@@ -3,280 +3,114 @@
 {% block title %}Browse Books - BookSage{% endblock %}
 
 {% block content %}
+<!-- Browse Books Section -->
 <section class="browse-section py-16">
-    <div class="container mx-auto px-4">
-        <div class="browse-header">
-            <div class="browse-title-wrap">
-                <h2 class="text-3xl font-bold mb-2">Browse Books</h2>
-                <div class="w-20 h-1 bg-green mb-8"></div>
-            </div>
-            
-            <div class="browse-filters">
-                <div class="filter-group">
-                    <select class="filter-select">
-                        <option>All Categories</option>
-                        <option>Computer Science</option>
-                        <option>Data Science</option>
-                        <option>Mathematics</option>
-                        <option>Engineering</option>
-                    </select>
-                </div>
-                
-                <div class="filter-group">
-                    <select class="filter-select">
-                        <option>Sort By: Popularity</option>
-                        <option>Newest First</option>
-                        <option>Highest Rated</option>
-                        <option>Title A-Z</option>
-                    </select>
-                </div>
-                
-                <div class="view-toggle">
-                    <button class="view-btn active">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                        </svg>
-                    </button>
-                    <button class="view-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+  <div class="container mx-auto px-4">
+    <div class="browse-header">
+      <div class="browse-title-wrap">
+        <h2 class="text-3xl font-bold mb-2">Browse Books</h2>
+        <div class="w-20 h-1 bg-green mb-8"></div>
+      </div>
+
+      <div class="browse-filters">
+        <div class="filter-group">
+          <select class="filter-select">
+            <option>All Categories</option>
+            <option>Computer Science</option>
+            <option>Data Science</option>
+            <option>Mathematics</option>
+            <option>Engineering</option>
+          </select>
         </div>
-        
-        <div class="book-list-item">
-            <div class="book-list-cover">
-                <img src="{{ get_book_cover(isbn='9780262033848', title='Algorithms Unlocked', author='Thomas H. Cormen') }}" 
-                     alt="Algorithms Unlocked cover" class="book-thumb">
-                <div class="book-list-rating">
-                    <span class="stars">★★★★☆</span>
-                </div>
-            </div>
-                </div>
-                <div class="book-list-info">
-                    <h3 class="book-list-title">Algorithms Unlocked</h3>
-                    <p class="book-list-author">Thomas H. Cormen</p>
-                    <p class="book-list-desc">An accessible introduction to algorithms that provides explanations of fundamental concepts alongside practical examples.</p>
-                    <div class="book-list-meta">
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            2013
-                        </span>
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                            </svg>
-                            86 reviews
-                        </span>
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            242 pages
-                        </span>
-                    </div>
-                </div>
-                <div class="book-list-actions">
-                    <button class="btn list-btn">Add to List</button>
-                    <button class="favorite-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="favorite-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="book-list-item">
-                <div class="book-list-cover">
-                    <img src="/api/placeholder/100/150" alt="Book cover" class="book-thumb">
-                    <div class="book-list-rating">
-                        <span class="stars">★★★★★</span>
-                    </div>
-                </div>
-                <div class="book-list-info">
-                    <h3 class="book-list-title">Deep Learning with Python</h3>
-                    <p class="book-list-author">François Chollet</p>
-                    <p class="book-list-desc">Written by the creator of Keras, this book provides a practical introduction to deep learning with Python and TensorFlow.</p>
-                    <div class="book-list-meta">
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            2021
-                        </span>
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                            </svg>
-                            124 reviews
-                        </span>
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            504 pages
-                        </span>
-                    </div>
-                </div>
-                <div class="book-list-actions">
-                    <button class="btn list-btn">Add to List</button>
-                    <button class="favorite-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="favorite-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="book-list-item">
-                <div class="book-list-cover">
-                    <img src="/api/placeholder/100/150" alt="Book cover" class="book-thumb">
-                    <div class="book-list-rating">
-                        <span class="stars">★★★★☆</span>
-                    </div>
-                </div>
-                <div class="book-list-info">
-                    <h3 class="book-list-title">The Pragmatic Programmer</h3>
-                    <p class="book-list-author">Andrew Hunt, David Thomas</p>
-                    <p class="book-list-desc">A classic guide to software craftsmanship that offers practical advice for improving the development process in a pragmatic, impactful way.</p>
-                    <div class="book-list-meta">
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            2019
-                        </span>
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                            </svg>
-                            192 reviews
-                        </span>
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            352 pages
-                        </span>
-                    </div>
-                </div>
-                <div class="book-list-actions">
-                    <button class="btn list-btn">Add to List</button>
-                    <button class="favorite-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="favorite-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="book-list-item">
-                <div class="book-list-cover">
-                    <img src="{{ get_book_cover(isbn='9780262033848', title='Algorithms Unlocked', author='Thomas H. Cormen') }}" 
-                         alt="Algorithms Unlocked cover" class="book-thumb">
-                    <div class="book-list-rating">
-                        <span class="stars">★★★★☆</span>
-                    </div>
-                </div>
-                <div class="book-list-info">
-                    <h3 class="book-list-title">Database Systems: The Complete Book</h3>
-                    <p class="book-list-author">Hector Garcia-Molina, Jeffrey D. Ullman, Jennifer Widom</p>
-                    <p class="book-list-desc">A comprehensive introduction to modern database systems, covering everything from database design to query optimization and transaction management.</p>
-                    <div class="book-list-meta">
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            2008
-                        </span>
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                            </svg>
-                            104 reviews
-                        </span>
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            1152 pages
-                        </span>
-                    </div>
-                </div>
-                <div class="book-list-actions">
-                    <button class="btn list-btn">Add to List</button>
-                    <button class="favorite-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="favorite-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="book-list-item">
-                <div class="book-list-cover">
-                    <img src="/api/placeholder/100/150" alt="Book cover" class="book-thumb">
-                    <div class="book-list-rating">
-                        <span class="stars">★★★★★</span>
-                    </div>
-                </div>
-                <div class="book-list-info">
-                    <h3 class="book-list-title">Structure and Interpretation of Computer Programs</h3>
-                    <p class="book-list-author">Harold Abelson, Gerald Jay Sussman</p>
-                    <p class="book-list-desc">A classic computer science textbook that teaches fundamental principles of programming using Scheme. Known for its philosophical approach to programming.</p>
-                    <div class="book-list-meta">
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            1996
-                        </span>
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                            </svg>
-                            213 reviews
-                        </span>
-                        <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            456 pages
-                        </span>
-                    </div>
-                </div>
-                <div class="book-list-actions">
-                    <button class="btn list-btn">Add to List</button>
-                    <button class="favorite-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="favorite-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+
+        <div class="filter-group">
+          <select class="filter-select">
+            <option>Sort By: Popularity</option>
+            <option>Newest First</option>
+            <option>Highest Rated</option>
+            <option>Title A-Z</option>
+          </select>
         </div>
-        
-        <div class="pagination">
-            <button class="pagination-btn disabled">
-                <svg xmlns="http://www.w3.org/2000/svg" class="pagination-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-            </button>
-            <button class="pagination-btn active">1</button>
-            <button class="pagination-btn">2</button>
-            <button class="pagination-btn">3</button>
-            <span class="pagination-ellipsis">...</span>
-            <button class="pagination-btn">12</button>
-            <button class="pagination-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" class="pagination-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </button>
+
+        <div class="view-toggle">
+          <button class="view-btn active">
+            <!-- List View Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+          </button>
+          <button class="view-btn">
+            <!-- Grid View Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+          </button>
         </div>
+      </div>
     </div>
+
+    <!-- Browse Books List View -->
+    <div class="browse-list">
+
+      <!-- Repeat this block for each book item -->
+      {% for book in books %}
+      <div class="book-list-item">
+        <div class="book-list-cover">
+          <img src="{{ get_book_cover(isbn=book.isbn, title=book.title, author=book.author) }}" alt="{{ book.title }} cover"
+            class="book-thumb">
+          <div class="book-list-rating">
+            <span class="stars">{{ book.rating }}</span>
+          </div>
+        </div>
+        <div class="book-list-info">
+          <h3 class="book-list-title">{{ book.title }}</h3>
+          <p class="book-list-author">{{ book.author }}</p>
+          <p class="book-list-desc">{{ book.description }}</p>
+          <div class="book-list-meta">
+            <span class="meta-item">
+              <!-- Year -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              {{ book.year }}
+            </span>
+            <span class="meta-item">
+              <!-- Reviews -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+              </svg>
+              {{ book.reviews }} reviews
+            </span>
+            <span class="meta-item">
+              <!-- Pages -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              {{ book.pages }} pages
+            </span>
+          </div>
+        </div>
+        <div class="book-list-actions">
+          <button class="btn list-btn">Add to List</button>
+          <button class="favorite-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="favorite-icon" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
 </section>
 {% endblock %}
