@@ -3172,7 +3172,8 @@ tr {
 
 .book-list-item,
 .book-grid-item {
-    background-color: #1f1f1f;
+    background-color: #0c0c0c;
+    border: 1px solid #1f1f1f;
     border-radius: 10px;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -3185,7 +3186,7 @@ tr {
 .book-list-item:hover,
 .book-grid-item:hover {
     transform: scale(1.02);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    border-color: #8bc34a;
 }
 
 .list-view .book-list-item {
@@ -3258,7 +3259,6 @@ tr {
     margin-top: 1rem;
 }
 
-.list-btn,
 .add-to-list-btn {
     background-color: #8bc34a;
     color: #121212;
@@ -3269,7 +3269,6 @@ tr {
     transition: background-color 0.3s ease;
 }
 
-.list-btn:hover,
 .add-to-list-btn:hover {
     background-color: #a5d66a;
 }
@@ -3289,18 +3288,4 @@ tr {
 
 .favorite-icon:hover {
     fill: #8bc34a;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .browse-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .browse-filters {
-        width: 100%;
-        justify-content: space-between;
-        margin-top: 1rem;
-    }
 }
