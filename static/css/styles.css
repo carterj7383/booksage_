@@ -2970,96 +2970,228 @@ tr {
     height: 2.5rem;
 }
 
-/* View Toggle Button Styles */
+/* Browse Books Page Styling */
+.browse-section {
+    background-color: #121212;
+    color: #ffffff;
+    padding: 4rem 0;
+}
+
+.browse-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.browse-title-wrap {
+    display: flex;
+    flex-direction: column;
+}
+
+.browse-title-wrap h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.browse-title-wrap .title-underline {
+    width: 4rem;
+    height: 0.25rem;
+    background-color: #8bc34a;
+}
+
+.browse-filters {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.filter-group {
+    position: relative;
+}
+
+.filter-select {
+    background-color: #1f1f1f;
+    color: #ffffff;
+    border: 1px solid #333;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    cursor: pointer;
+}
+
 .view-toggle {
     display: flex;
     gap: 0.5rem;
 }
 
 .view-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    opacity: 0.5;
-    transition: opacity 0.3s ease;
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+    border-radius: 0.5rem;
     padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.view-btn:hover {
+    background-color: #2c2c2c;
 }
 
 .view-btn.active {
-    opacity: 1;
+    background-color: #8bc34a;
+    border-color: #8bc34a;
 }
 
 .view-btn .icon {
     width: 1.5rem;
     height: 1.5rem;
-    stroke: currentColor;
+    stroke: #ffffff;
 }
 
-/* View Layouts */
+.view-btn.active .icon {
+    stroke: #121212;
+}
+
+/* Book List Styles */
 .book-list {
     display: none;
 }
 
 .book-list.active {
-    display: block;
-}
-
-/* List view layout */
-.book-list.list-view {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-/* Grid view layout */
-.book-list.grid-view {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.book-list.list-view {
+    grid-template-columns: 1fr;
     gap: 1.5rem;
-    align-items: start;
 }
 
-/* Book card styles */
-.book-card {
+.book-list.grid-view {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.book-list-item,
+.book-grid-item {
     background-color: #1f1f1f;
-    padding: 1rem;
-    border-radius: 10px;
+    border-radius: 1rem;
+    padding: 1.5rem;
     display: flex;
-    gap: 1rem;
+    align-items: center;
+    gap: 1.5rem;
+    transition: transform 0.3s ease;
 }
 
-/* Horizontal layout for list */
-.list-view .book-card {
+.book-list-item:hover,
+.book-grid-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.list-view .book-list-item {
     flex-direction: row;
 }
 
-/* Vertical layout for grid */
-.grid-view .book-card {
+.grid-view .book-grid-item {
     flex-direction: column;
-    align-items: center;
     text-align: center;
 }
 
-/* Book cover image */
-.book-card img {
-    width: 100%;
-    height: auto;
-    max-width: 140px;
+.book-thumb {
+    max-width: 150px;
+    max-height: 250px;
     object-fit: contain;
+    border-radius: 0.5rem;
 }
 
-/* Make image fit grid nicely */
-.grid-view .book-card img {
+.grid-view .book-thumb {
     max-width: 100%;
+    margin-bottom: 1rem;
 }
 
-/* Title and author alignment */
-.grid-view .book-title,
-.grid-view .book-author {
-    text-align: center;
+.book-list-info,
+.book-grid-info {
+    flex-grow: 1;
 }
 
-.list-view .book-title,
-.list-view .book-author {
-    text-align: left;
+.book-list-title,
+.book-grid-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.book-list-author,
+.book-grid-author {
+    color: #8bc34a;
+    margin-bottom: 1rem;
+}
+
+.book-list-meta {
+    display: flex;
+    gap: 1rem;
+    color: #aaa;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.meta-icon {
+    width: 1rem;
+    height: 1rem;
+    stroke: #8bc34a;
+}
+
+.book-list-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.btn {
+    background-color: #8bc34a;
+    color: #121212;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #a5d66a;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.favorite-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    stroke: #8bc34a;
+    transition: fill 0.3s ease;
+}
+
+.favorite-icon:hover {
+    fill: #8bc34a;
 }
