@@ -1,3 +1,4 @@
+console.log("toggleView.js loaded!");
 document.addEventListener('DOMContentLoaded', () => {
     const listViewBtn = document.getElementById('listViewBtn');
     const gridViewBtn = document.getElementById('gridViewBtn');
