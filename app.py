@@ -160,7 +160,8 @@ def browse():
         }
     ]
     
-    return render_template('browse.html', recommended_books=browse_books)
+    return render_template('browse.html', books=browse_books)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
