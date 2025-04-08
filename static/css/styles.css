@@ -2969,3 +2969,66 @@ tr {
     width: 2.5rem;
     height: 2.5rem;
 }
+
+/* View Toggle Layouts */
+
+/* List view layout */
+.book-list.list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  /* Grid view layout */
+  .book-list.grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+  }
+  
+  /* Book card styles */
+  .book-card {
+    background-color: #1f1f1f;
+    padding: 1rem;
+    border-radius: 10px;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  /* Horizontal layout for list */
+  .list-view .book-card {
+    flex-direction: row;
+  }
+  
+  /* Vertical layout for grid */
+  .grid-view .book-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  /* Book cover image */
+  .book-card img {
+    width: 100%;
+    height: auto;
+    max-width: 140px;
+    object-fit: contain;
+  }
+  
+  /* Make image fit grid nicely */
+  .grid-view .book-card img {
+    max-width: 100%;
+  }
+  
+  /* Title and author alignment */
+  .grid-view .book-title,
+  .grid-view .book-author {
+    text-align: center;
+  }
+  
+  .list-view .book-title,
+  .list-view .book-author {
+    text-align: left;
+  }
+  
