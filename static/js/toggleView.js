@@ -5,28 +5,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const listView = document.getElementById('listView');
     const gridView = document.getElementById('gridView');
   
-    // Default to list view
-    listView.style.display = 'block';
-    gridView.style.display = 'none';
-    listViewBtn.classList.add('active');
+    // Function to switch views
+    function showListView() {
+        listView.classList.add('active');
+        gridView.classList.remove('active');
+        listViewBtn.classList.add('active');
+        gridViewBtn.classList.remove('active');
+    }
+    
+    function showGridView() {
+        gridView.classList.add('active');
+        listView.classList.remove('active');
+        gridViewBtn.classList.add('active');
+        listViewBtn.classList.remove('active');
+    }
   
-    listViewBtn.addEventListener('click', () => {
-      // Show list view
-      listView.style.display = 'block';
-      gridView.style.display = 'none';
-      
-      // Update button active states
-      listViewBtn.classList.add('active');
-      gridViewBtn.classList.remove('active');
-    });
+    // Default to list view on page load
+    showListView();
   
-    gridViewBtn.addEventListener('click', () => {
-      // Show grid view
-      gridView.style.display = 'block';
-      listView.style.display = 'none';
-      
-      // Update button active states
-      gridViewBtn.classList.add('active');
-      listViewBtn.classList.remove('active');
-    });
+    // Add event listeners
+    listViewBtn.addEventListener('click', showListView);
+    gridViewBtn.addEventListener('click', showGridView);
 });

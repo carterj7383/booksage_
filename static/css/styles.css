@@ -3314,3 +3314,66 @@ tr {
     transform: translateY(-5px);
     border-color: var(--green);
 }
+/* Make the grid view display properly when active */
+.book-list.grid-view.active {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns by default */
+    gap: 1.5rem;
+    width: 100%;
+}
+
+/* Make each grid item a proper card */
+.book-grid-item {
+    background-color: var(--card);
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.book-grid-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--green);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Style the book thumbnail */
+.book-grid-item .book-thumb {
+    width: 150px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Style book info in grid view */
+.book-grid-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+.book-grid-author {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .book-list.grid-view.active {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+    }
+}
+
+@media (max-width: 576px) {
+    .book-list.grid-view.active {
+        grid-template-columns: 1fr; /* 1 column on small screens */
+    }
+}
