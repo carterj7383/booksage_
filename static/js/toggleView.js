@@ -1,3 +1,4 @@
+
 console.log("toggleView.js loaded!");
 document.addEventListener('DOMContentLoaded', () => {
     const listViewBtn = document.getElementById('listViewBtn');
@@ -7,15 +8,23 @@ document.addEventListener('DOMContentLoaded', () => {
   
     // Function to switch views
     function showListView() {
-        listView.classList.add('active');
-        gridView.classList.remove('active');
+        // Hide grid view first
+        gridView.style.display = 'none';
+        // Then show list view
+        listView.style.display = 'block';
+        
+        // Update button active states
         listViewBtn.classList.add('active');
         gridViewBtn.classList.remove('active');
     }
     
     function showGridView() {
-        gridView.classList.add('active');
-        listView.classList.remove('active');
+        // Hide list view first
+        listView.style.display = 'none';
+        // Then show grid view with grid display
+        gridView.style.display = 'grid';
+        
+        // Update button active states
         gridViewBtn.classList.add('active');
         listViewBtn.classList.remove('active');
     }
