@@ -6,13 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const gridView = document.getElementById('gridView');
   
     // Default to list view
-    listView.classList.add('active');
+    listView.style.display = 'block';
+    gridView.style.display = 'none';
     listViewBtn.classList.add('active');
   
     listViewBtn.addEventListener('click', () => {
       // Show list view
-      listView.classList.add('active');
-      gridView.classList.remove('active');
+      listView.style.display = 'block';
+      gridView.style.display = 'none';
       
       // Update button active states
       listViewBtn.classList.add('active');
@@ -21,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
   
     gridViewBtn.addEventListener('click', () => {
       // Show grid view
-      gridView.classList.add('active');
-      listView.classList.remove('active');
+      gridView.style.display = 'block';
+      listView.style.display = 'none';
       
       // Update button active states
       gridViewBtn.classList.add('active');

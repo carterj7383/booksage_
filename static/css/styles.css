@@ -3289,3 +3289,28 @@ tr {
 .favorite-icon:hover {
     fill: #8bc34a;
 }
+
+/* View toggling styles - fixes for browse page */
+.book-list {
+    display: none;
+}
+
+.book-list.active {
+    display: block;
+}
+
+.book-list.grid-view.active {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.book-grid-item {
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.book-grid-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--green);
+}
