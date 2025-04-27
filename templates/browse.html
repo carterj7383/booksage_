@@ -111,19 +111,62 @@
     </div>
 
     <!-- Browse Books Grid View -->
-    <div class="book-list grid-view" id="gridView" style="display: none;">
+    <div class="book-list grid-view" id="gridView">
       {% for book in books %}
-      <div class="book-grid-item view-item">
+      <div class="book-grid-item">
         <img src="{{ get_book_cover(isbn=book.isbn, title=book.title, author=book.author) }}"
-          alt="{{ book.title }} cover" class="book-thumb mb-2">
-        <h3 class="book-grid-title font-semibold">{{ book.title }}</h3>
-        <p class="book-grid-author text-sm text-gray-600">{{ book.author }}</p>
+          alt="{{ book.title }} cover" class="book-thumb">
+        <h3 class="book-grid-title">{{ book.title }}</h3>
+        <p class="book-grid-author">{{ book.author }}</p>
+        <div class="book-grid-rating">
+          <span class="stars">{{ book.rating }}</span>
+          <span class="review-count">({{ book.reviews }} reviews)</span>
+        </div>
       </div>
       {% endfor %}
     </div>
   </div>
 </section>
 
-<!-- Link external JS -->
-<script src="{{ url_for('static', filename='js/toggleView.js') }}"></script>
+<script>
+  // Inline script to ensure proper loading
+  document.addEventListener('DOMContentLoaded', () => {
+    const listViewBtn = document.getElementById('listViewBtn');
+    const gridViewBtn = document.getElementById('gridViewBtn');
+    const listView = document.getElementById('listView');
+    const gridView = document.getElementById('gridView');
+  
+    // Function to switch views
+    function showListView() {
+      // Hide grid view first
+      gridView.style.display = 'none';
+      // Then show list view
+      listView.style.display = 'block';
+      
+      // Update button active states
+      listViewBtn.classList.add('active');
+      gridViewBtn.classList.remove('active');
+    }
+    
+    function showGridView() {
+      // Hide list view first
+      listView.style.display = 'none';
+      // Then show grid view with grid display
+      gridView.style.display = 'grid';
+      
+      // Update button active states
+      gridViewBtn.classList.add('active');
+      listViewBtn.classList.remove('active');
+    }
+  
+    // Default to list view on page load
+    showListView();
+  
+    // Add event listeners
+    listViewBtn.addEventListener('click', showListView);
+    gridViewBtn.addEventListener('click', showGridView);
+    
+    console.log("View toggle initialized");
+  });
+</script>
 {% endblock %}

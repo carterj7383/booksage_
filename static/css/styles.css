@@ -1,13 +1,15 @@
 /* BookSage styles */
+/* In styles.css - Update the root variables */
 :root {
     --black: #000000;
     --gray: #e5e5e5;
     --green: #c5db94;
     --lt-green: #e2edc1;
-    --dark: #121212;
-    --card: #1e1e1e;
-    --border: #2a2a2a;
-    --text-gray: #a0aec0;
+    --bright-green: #d1e3a0; /* New slightly brighter green for highlights */
+    --dark: #1a1a1a;         /* Lighter than original #121212 */
+    --card: #222222;         /* Lighter than original #1e1e1e */
+    --border: #333333;       /* Lighter than original #2a2a2a */
+    --text-gray: #b0b0b0;    /* Brighter than original #a0aec0 */
 }
 
 /* === RESET & BASICS === */
@@ -1085,7 +1087,7 @@ header {
 
 /* Hero */
 .hero {
-    background: linear-gradient(to bottom right, #121212, #1a1a1a);
+    background: linear-gradient(to bottom right, #202020, #2a2a2a);
     position: relative;
     overflow: hidden;
     padding: 5rem 0;
@@ -1098,7 +1100,7 @@ header {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 20% 50%, rgba(197, 219, 148, 0.15), transparent 50%);
+    background: radial-gradient(circle at 20% 50%, rgba(197, 219, 148, 0.25), transparent 65%);
 }
 
 .hero-content {
@@ -1556,8 +1558,9 @@ td {
     padding: 0.75rem 1rem;
 }
 
+
 thead {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 tr {
@@ -3288,4 +3291,90 @@ tr {
 
 .favorite-icon:hover {
     fill: #8bc34a;
+}
+
+/* View toggling styles - fixes for browse page */
+.book-list {
+    display: none;
+}
+
+/* Grid layout styles */
+.grid-view {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns by default */
+    gap: 1.5rem;
+}
+
+/* Book grid item styles */
+.book-grid-item {
+    background-color: var(--card);
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.book-grid-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--green);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Style the book thumbnail */
+.book-grid-item .book-thumb {
+    width: 150px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Style book info in grid view */
+.book-grid-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+.book-grid-author {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.book-grid-rating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.book-grid-rating .stars {
+    color: #fbbf24;
+    margin-bottom: 0.25rem;
+}
+
+.review-count {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .grid-view {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+    }
+}
+
+@media (max-width: 576px) {
+    .grid-view {
+        grid-template-columns: 1fr; /* 1 column on small screens */
+    }
 }
