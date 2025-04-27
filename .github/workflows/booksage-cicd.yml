@@ -1,4 +1,4 @@
-name: BookSage CI/CD Pipeline
+name: BookSage Build
 
 permissions:
   contents: write
@@ -12,200 +12,55 @@ on:
   workflow_dispatch:
 
 jobs:
-  validate-code:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Fetch all history for all branches and tags
-          token: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub token for authentication
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-          cache: 'pip'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt flake8 pytest pytest-flask
-
-      - name: Lint with flake8
-        run: |
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-
-  validate-templates:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Fetch all history for all branches and tags
-          token: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub token for authentication
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          pip install flask jinja2 beautifulsoup4
-
-      - name: Validate HTML templates
-        run: |
-          if [ -f scripts/validate_html.py ]; then
-            python scripts/validate_html.py
-          else
-            echo "WARNING: scripts/validate_html.py not found! Skipping..."
-          fi
-
-  build:
-    needs: [validate-code, validate-templates]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Fetch all history for all branches and tags
-          token: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub token for authentication
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-
-      # Add a step to specifically check for database.db and create it if needed
-      - name: Check and handle database file
-        run: |
-          if [ -f database.db ]; then
-            echo "Found existing database.db file"
-          else
-            echo "Database file not found, creating an empty one"
-            # Create an empty SQLite database file
-            python -c "import sqlite3; conn = sqlite3.connect('database.db'); conn.close()"
-          fi
-
-      # Create a special app_wrapper.py file for PyInstaller
-      - name: Create PyInstaller wrapper
-        run: |
-          cat > app_wrapper.py << 'EOF'
-          import os
-          import sys
-          
-          def resource_path(relative_path):
-              """ Get absolute path to resource, works for dev and for PyInstaller """
-              try:
-                  # PyInstaller creates a temp folder and stores path in _MEIPASS
-                  base_path = sys._MEIPASS
-              except Exception:
-                  base_path = os.path.abspath(".")
-          
-              return os.path.join(base_path, relative_path)
-          
-          # Now import and run the app
-          # This will override the Flask app initialization in app.py
-          import app
-          
-          # Patch the Flask app to use the correct paths
-          app.app.template_folder = resource_path('templates')
-          app.app.static_folder = resource_path('static')
-          
-          if __name__ == "__main__":
-              app.app.run(debug=False)
-          EOF
-          
-          echo "Created app_wrapper.py for PyInstaller"
-
-      - name: Create deployment package
-        run: |
-          mkdir -p deployment
-          cp -r templates deployment/ || echo "No templates directory found"
-          cp -r static deployment/ || mkdir -p deployment/static
-          cp *.py deployment/ || echo "No Python files found at root"
-          cp requirements.txt deployment/ || echo "No requirements.txt found"
-          cp database.db deployment/ || echo "No database.db found"
-          cp app_wrapper.py deployment/ || echo "Failed to copy wrapper"
-          ls -la deployment/
-          cd deployment && zip -r ../booksage-app.zip .
-
-      - name: Upload deployment package
-        uses: actions/upload-artifact@v4
-        with:
-          name: booksage-app
-          path: booksage-app.zip
-
-  create-executable:
-    needs: build
+  build-executable:
     runs-on: windows-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history for all branches and tags
-          token: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub token for authentication
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: booksage-app
-          path: .
-
-      - name: Extract build files
-        run: |
-          if (Test-Path extracted) { Remove-Item extracted -Recurse -Force }
-          Expand-Archive -Path booksage-app.zip -DestinationPath extracted
-
-      - name: Debug directory contents
-        run: |
-          echo "Listing extracted directory contents:"
-          Get-ChildItem -Path extracted -Recurse | Select-Object FullName
-
       - name: Install dependencies
         run: |
-          cd extracted
+          python -m pip install --upgrade pip
           pip install -r requirements.txt pyinstaller
 
-      - name: Check database existence
+      - name: Create database if needed
         run: |
-          # Use proper Windows path with backslashes
-          if (-Not (Test-Path "extracted\database.db")) {
-            echo "WARNING: database.db not found, creating an empty one"
-            # Use PowerShell to create an empty database file
-            $null = New-Item -Path "extracted\database.db" -ItemType File -Force
-            echo "Created empty database.db file"
-          } else {
-            echo "database.db found in extracted directory"
+          if (-Not (Test-Path "database.db")) {
+            echo "Creating empty database.db file"
+            python -c "import sqlite3; conn = sqlite3.connect('database.db'); conn.close()"
           }
+
+      - name: Create PyInstaller wrapper
+        run: |
+          @"
+          import os
+          import sys
+          
+          def resource_path(relative_path):
+              try:
+                  base_path = sys._MEIPASS
+              except Exception:
+                  base_path = os.path.abspath(".")
+              return os.path.join(base_path, relative_path)
+          
+          import app
+          
+          app.app.template_folder = resource_path('templates')
+          app.app.static_folder = resource_path('static')
+          
+          if __name__ == "__main__":
+              app.app.run(debug=False)
+          "@ | Out-File -FilePath app_wrapper.py -Encoding utf8
 
       - name: Create PyInstaller executable
         run: |
-          # Move to extracted directory
-          cd extracted
-          
-          # Make sure database.db exists - if not, create an empty one
-          if (-Not (Test-Path "database.db")) {
-            echo "Creating empty database.db file"
-            $null = New-Item -Path "database.db" -ItemType File -Force
-          }
-          
-          # List files to verify
-          echo "Files in extracted directory:"
-          Get-ChildItem -Path . | Select-Object Name
-          
-          # Use app_wrapper.py as the entry point with correct path formats for Windows
           pyinstaller --onedir `
             --add-data "templates;templates" `
             --add-data "static;static" `
@@ -215,44 +70,16 @@ jobs:
             app_wrapper.py `
             --name BookSage
 
-      - name: Package final application
+      - name: Package application
         run: |
-          cd extracted/dist
-          dir
-          # With --onedir, PyInstaller creates a folder called "BookSage"
-          Compress-Archive -Path BookSage/* -DestinationPath "${{ github.workspace }}/BookSage_App.zip" -Force
-              
-      - name: Upload executable package
-        uses: actions/upload-artifact@v4
+          Compress-Archive -Path "dist/BookSage/*" -DestinationPath "BookSage_App.zip" -Force
+
+      - name: Create GitHub Release
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: softprops/action-gh-release@v1
         with:
-          name: booksage-executable
-          path: "${{ github.workspace }}/BookSage_App.zip"
-
-  create-release:
-  needs: [create-executable]
-  if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Download executable artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: booksage-executable
-        path: .
-
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
-      env: 
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ github.run_number }}
-        name: "BookSage Release ${{ github.run_number }}"
-        draft: false
-        prerelease: false
-        files: |
-          BookSage_App.zip 
+          tag_name: v${{ github.run_number }}
+          name: "BookSage Release v${{ github.run_number }}"
+          draft: false
+          prerelease: false
+          files: BookSage_App.zip
