@@ -229,43 +229,30 @@ jobs:
           path: "${{ github.workspace }}/BookSage_App.zip"
 
   create-release:
-    needs: [build, create-executable]
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Fetch all history for all branches and tags
-          token: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub token for authentication
+  needs: [create-executable]
+  if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Download zip artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: booksage-app
-          path: .
+    - name: Download executable artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: booksage-executable
+        path: .
 
-      - name: Upload executable package
-        uses: actions/upload-artifact@v4
-        with:
-          name: booksage-executable
-          path: "${{ github.workspace }}/BookSage_App.zip"
-
-      - name: Download executable artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: booksage-executable
-          path: .
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ github.run_number }}
-          name: "Release ${{ github.run_number }}"
-          draft: false
-          prerelease: false
-          files: |
-            booksage-app.zip
-            BookSage_App.zip
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.run_number }}
+        name: "BookSage Release ${{ github.run_number }}"
+        draft: false
+        prerelease: false
+        files: |
+          BookSage_App.zip
