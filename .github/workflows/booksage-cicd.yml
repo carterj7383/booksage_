@@ -206,7 +206,7 @@ jobs:
           Get-ChildItem -Path . | Select-Object Name
           
           # Use app_wrapper.py as the entry point with correct path formats for Windows
-          pyinstaller --onefile `
+          pyinstaller --onedir `
             --add-data "templates;templates" `
             --add-data "static;static" `
             --add-data "database.db;." `
@@ -219,12 +219,14 @@ jobs:
         run: |
           cd extracted/dist
           dir
-
-          if (Test-Path BookSage) {
-            Compress-Archive -Path BookSage/* -DestinationPath "${{ github.workspace }}/BookSage_App.zip" -Force
-          } else {
-            Compress-Archive -Path * -DestinationPath "${{ github.workspace }}/BookSage_App.zip" -Force
-          }
+          # With --onedir, PyInstaller creates a folder called "BookSage"
+          Compress-Archive -Path BookSage/* -DestinationPath "${{ github.workspace }}/BookSage_App.zip" -Force
+              
+      - name: Upload executable package
+        uses: actions/upload-artifact@v4
+        with:
+          name: booksage-executable
+          path: "${{ github.workspace }}/BookSage_App.zip"
 
   create-release:
     needs: [build, create-executable]
@@ -242,7 +244,7 @@ jobs:
         with:
           name: booksage-app
           path: .
-          
+
       - name: Upload executable package
         uses: actions/upload-artifact@v4
         with:
