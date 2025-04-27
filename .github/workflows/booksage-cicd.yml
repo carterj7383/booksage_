@@ -206,7 +206,7 @@ jobs:
           Get-ChildItem -Path . | Select-Object Name
           
           # Use app_wrapper.py as the entry point with correct path formats for Windows
-          pyinstaller --onedir `
+          pyinstaller --onefile `
             --add-data "templates;templates" `
             --add-data "static;static" `
             --add-data "database.db;." `
@@ -242,7 +242,12 @@ jobs:
         with:
           name: booksage-app
           path: .
-
+      - name: Upload executable package
+        uses: actions/upload-artifact@v4
+          with:
+          name: booksage-executable
+          path: "${{ github.workspace }}/BookSage_App.zip"
+          
       - name: Download executable artifact
         uses: actions/download-artifact@v4
         with:
