@@ -218,13 +218,13 @@ jobs:
       - name: Package final application
         run: |
           cd extracted/dist
-          Compress-Archive -Path BookSage/* -DestinationPath ./BookSage_App.zip
+          dir
 
-      - name: Upload executable package
-        uses: actions/upload-artifact@v4
-        with:
-          name: booksage-executable
-          path: BookSage_App.zip
+          if (Test-Path BookSage) {
+            Compress-Archive -Path BookSage/* -DestinationPath "${{ github.workspace }}/BookSage_App.zip" -Force
+          } else {
+            Compress-Archive -Path * -DestinationPath "${{ github.workspace }}/BookSage_App.zip" -Force
+          }
 
   create-release:
     needs: [build, create-executable]
