@@ -209,29 +209,6 @@ CREATE TABLE users (
 - Cards: #222222
 - Text: #e5e5e5 (Light Gray)
 
-## Screenshots
-
-### Home Page
-![Home Page](screenshots/home-page.png)
-*Main landing page with personalized recommendations*
-
-### Browse Books
-![Browse Page](screenshots/browse-page.png)
-*Book catalog with filter options*
-
-### User Dashboard
-![Dashboard](screenshots/dashboard.png)
-*Personal reading dashboard*
-
-### Profile Page
-![Profile Page](screenshots/profile-page.png)
-*User profile and settings*
-
-### Authentication
-![Auth Pages](screenshots/auth-pages.png)
-*Login and registration forms*
-
----
 
 # Section 4: Implementation Details
 
